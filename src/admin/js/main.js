@@ -1,0 +1,74 @@
+/* global angular */
+import 'ng-admin';
+require('ng-admin/build/ng-admin.min.css');
+
+function redirectToLogin() {
+    window.location = '/admin/login.html';
+}
+
+function logout() {
+    window.localStorage.removeItem('id');
+    window.localStorage.removeItem('email');
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('expires');
+    redirectToLogin();
+}
+
+window.logout = logout;
+
+if (!window.localStorage.getItem('token')) redirectToLogin();
+
+const myApp = angular.module('myApp', ['ng-admin']);
+
+myApp.config(['NgAdminConfigurationProvider', (nga) => {
+    const admin = nga
+        .application(APP_NAME) // eslint-disable-line no-undef
+        .baseApiUrl(ADMIN_API_URL); // eslint-disable-line no-undef
+
+    admin.menu(nga.menu()
+    );
+
+    admin.dashboard(nga.dashboard());
+    admin.header(require('./header.html'));
+
+    nga.configure(admin);
+}]);
+
+myApp.config(['RestangularProvider', (RestangularProvider) => {
+    RestangularProvider.setDefaultHttpFields({ withCredentials: true });
+    RestangularProvider.addFullRequestInterceptor((element, operation, what, url, headers, params) => {
+        const currentTime = (new Date()).getTime();
+        const tokenExpires = window.localStorage.getItem('expires');
+
+        if (tokenExpires && tokenExpires < currentTime) {
+            logout();
+            redirectToLogin();
+        }
+
+        headers = headers || {};
+        headers['Authorization'] = window.localStorage.getItem('token');
+
+        if (operation === 'getList') {
+            if (params._page) {
+                const start = (params._page - 1) * params._perPage;
+                const end = params._page * params._perPage - 1;
+                params.range = `[${start},${end}]`;
+                delete params._page;
+                delete params._perPage;
+            }
+
+            if (params._sortField) {
+                params.sort = `[${params._sortField},${params._sortDir}]`;
+                delete params._sortField;
+                delete params._sortDir;
+            }
+
+            if (params._filters) {
+                params.filter = params._filters;
+                delete params._filters;
+            }
+        }
+
+        return {params};
+    });
+}]);

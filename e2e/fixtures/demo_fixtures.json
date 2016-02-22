@@ -1,0 +1,12 @@
+{
+    "users" : [
+        {
+            "email": "user1@marmelab.io",
+            "password": "password"
+        },
+        {
+            "email": "user2@marmelab.io",
+            "password": "password"
+        }
+    ]
+}
