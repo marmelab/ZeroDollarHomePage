@@ -12,6 +12,8 @@ Requirements:
 make install
 ```
 
+See [how to setup Ethereum environment](doc/ETH_SETUP.md).
+
 ## Develop
 
 ```sh
