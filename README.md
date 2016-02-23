@@ -7,13 +7,28 @@ Requirements:
 * Node.js V5
 * PostgreSQL
 * ethereum-cpp (see [instructions](https://gavofyork.gitbooks.io/turboethereum/content/chapter1.html))
+* Docker & eris (see [instructions](https://docs.erisindustries.com/tutorials/getting-started/))
 
 ```sh
 # install npm dependencies and Selenium (for tests)
 make install
 ```
 
-See [how to setup Ethereum environment](doc/ETH_SETUP.md).
+To start and manage your own local blockchain, simply run:
+```bash
+make init-blockchain  # Install and run a blockchain called 'zerodollar'
+
+# Run the stopped blockchain
+make run-blockchain
+# Stop the blockchain
+make stop-blockchain
+# See blockchain's logs
+make log-blockchain
+# Delete the blockchain from your computer
+make delete-blockchain
+```
+
+For more informations about eris and its blockchain management, see [these tutorials](https://docs.erisindustries.com/tutorials/).
 
 ## Develop
 
