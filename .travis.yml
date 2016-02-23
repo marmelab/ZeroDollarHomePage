@@ -25,6 +25,8 @@ before_script:
 
 before_install:
     - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    - sudo apt-key adv --keyserver hkp://pool.sks-keyservers.net --recv-keys DDA1D0AB
+    - sudo echo "deb https://apt.eris.industries precise main" > /etc/apt/sources.list.d/eris.list
     - sudo add-apt-repository ppa:ethereum/ethereum-qt -y
     - sudo add-apt-repository ppa:ethereum/ethereum -y
     - sudo apt-get update -q
