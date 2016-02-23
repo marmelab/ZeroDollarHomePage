@@ -6,6 +6,7 @@ Requirements:
 
 * Node.js V5
 * PostgreSQL
+* ethereum-cpp (see [instructions](https://gavofyork.gitbooks.io/turboethereum/content/chapter1.html))
 
 ```sh
 # install npm dependencies and Selenium (for tests)
