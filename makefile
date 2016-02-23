@@ -138,7 +138,7 @@ load-fixtures:
 
 test:
 	@cp -n ./config/test-dist.js ./config/test.js | true
-	make test-ethereum
+	make test-ethereum # comment for travis
 	make test-frontend-unit
 	make test-api-unit
 	# TODO: restore when implemented
