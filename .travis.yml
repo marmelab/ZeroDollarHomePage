@@ -1,4 +1,5 @@
 language: node_js
+dist: trusty
 
 node_js:
     - "4.1"
@@ -6,16 +7,10 @@ node_js:
 env:
     - CXX=g++-4.8
 
-sudo: false
+sudo: required
 
 addons:
     postgresql: "9.3"
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - gcc-4.8
-            - g++-4.8
 
 services:
     - postgresql
@@ -30,6 +25,13 @@ before_script:
     - "export NODE_ENV=test"
 
 before_install:
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    - sudo apt-key adv --keyserver hkp://pool.sks-keyservers.net --recv-keys DDA1D0AB
+    - sudo echo "deb https://apt.eris.industries trusty main" | sudo tee -a /etc/apt/sources.list
+    - sudo add-apt-repository ppa:ethereum/ethereum-qt -y
+    - sudo add-apt-repository ppa:ethereum/ethereum -y
+    - sudo apt-get update -q
+    - sudo apt-get install gcc-4.8 g++-4.8 cpp-ethereum -y
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
 

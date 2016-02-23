@@ -20,14 +20,14 @@ export default function(client) {
 
     function* getTokenFor(email) {
         // const causes an error! don't know why
-        const user = yield userQueries.findByEmail(email);
+        let user = yield userQueries.findByEmail(email);
         delete user.id;
 
         return jwt.sign(user, config.apps.api.security.jwt.privateKey);
     }
 
     function* getCookieTokenFor(email) {
-        const token = yield getTokenFor(email);
+        let token = yield getTokenFor(email);
 
         return crypto.createHmac('sha256', config.apps.api.security.secret)
             .update(token)
