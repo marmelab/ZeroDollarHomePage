@@ -23,6 +23,9 @@ install: copy-conf
 build:
 	@./node_modules/.bin/webpack --progress
 
+build-ethereum:
+	solc --bin --abi -o ./src/ethereum ./src/ethereum/ZeroDollarHomePage.sol ./src/ethereum/ZeroDollarHomePageTest.sol
+
 clean:
 	git clean -nxdf
 
@@ -103,6 +106,13 @@ log-api-dev:
 # Tests ========================================================================
 build-test:
 	@NODE_ENV=test ./node_modules/.bin/webpack --progress
+
+
+copy-sol-unit:
+	@cp -f ./node_modules/sol-unit/contracts/src/* ./src/ethereum/
+
+test-ethereum: copy-sol-unit build-ethereum
+	./node_modules/.bin/solunit --dir ./src/ethereum
 
 test-api-unit:
 	@NODE_ENV=test ./node_modules/.bin/mocha --require "./babel-transformer" --require=co-mocha --recursive ./src/api/
