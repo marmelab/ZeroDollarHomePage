@@ -9,3 +9,8 @@ selenium-debug.log
 e2e/**/reports
 .tern-project
 npm-debug.log
+src/ethereum/Asserter*
+src/ethereum/Assertions*
+src/ethereum/Test*
+src/ethereum/*.abi
+src/ethereum/*.bin

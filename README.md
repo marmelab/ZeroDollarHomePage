@@ -6,6 +6,7 @@ Requirements:
 
 * Node.js V5
 * PostgreSQL
+* ethereum-cpp (see [instructions](https://gavofyork.gitbooks.io/turboethereum/content/chapter1.html))
 
 ```sh
 # install npm dependencies and Selenium (for tests)
@@ -54,6 +55,7 @@ make test-api-functional
 make test-frontend-unit
 make test-frontend-functional
 make test-isomorphic-unit
+make test-ethereum
 ```
 
 API (and common lib) unit tests using:
