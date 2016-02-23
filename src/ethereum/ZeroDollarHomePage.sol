@@ -100,7 +100,7 @@ contract ZeroDollarHomePage {
     /*
      * Get the next image to be displayed on the ZeroDollarHomePage site
      */
-    function getImageToDisplay() returns (string) {
+    function getNextImage() returns (string) {
         if (_queue.length == 0) {
             return "";
         }
@@ -111,11 +111,22 @@ contract ZeroDollarHomePage {
     /*
      * Get the next image to be displayed on the ZeroDollarHomePage site
      */
-    function getContributorToDisplay() returns (string) {
+    function getNextContributor() returns (string) {
         if (_queue.length == 0) {
             return "";
         }
 
         return _requests[_queue[0]].authorName;
+    }
+
+    /*
+     * Get the next image to be displayed on the ZeroDollarHomePage site
+     */
+    function getNextSha() returns (string) {
+        if (_queue.length == 0) {
+            return "";
+        }
+
+        return _requests[_queue[0]].commitSha;
     }
 }
