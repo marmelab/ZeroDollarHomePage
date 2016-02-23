@@ -68,14 +68,14 @@ stop-dev:
 	@node_modules/.bin/pm2 delete ./config/pm2_servers/dev.json
 
 restart-frontend-dev:
-	@node_modules/.bin/pm2 restart bpm_frontend-dev
+	@node_modules/.bin/pm2 restart zdh_frontend-dev
 	@echo "Webpack dev restarted"
 restart-api-dev:
-	@node_modules/.bin/pm2 restart bpm_api-dev
+	@node_modules/.bin/pm2 restart zdh_api-dev
 	@echo "API dev restarted"
 
 run-api:
-	@node ./api/index.js
+	@node ./src/api/index.js
 run-frontend:
 	@./node_modules/.bin/webpack-dev-server  \
 		--no-info \
@@ -96,9 +96,9 @@ servers-clear-all:
 	@node_modules/.bin/pm2 flush
 
 log-frontend-dev:
-	@node_modules/.bin/pm2 logs bpm_frontend-dev
+	@node_modules/.bin/pm2 logs zdh_frontend-dev
 log-api-dev:
-	@node_modules/.bin/pm2 logs bpm_api-dev
+	@node_modules/.bin/pm2 logs zdh_api-dev
 
 # Tests ========================================================================
 build-test:

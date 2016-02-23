@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"       : "bpm_api-test",
+    "name"       : "zdh_api-test",
     "script"     : "./src/api/index.js",
     "exec_mode"  : "fork",
     "env": {
@@ -9,7 +9,7 @@
     }
   },
   {
-    "name"       : "bpm_frontend-test",
+    "name"       : "zdh_frontend-test",
     "script"     : "./node_modules/.bin/http-server",
     "args"       : ["./build", "-p 8081", "--silent"],
     "exec_mode"  : "fork",

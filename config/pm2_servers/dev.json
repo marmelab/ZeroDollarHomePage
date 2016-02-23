@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"       : "bpm_api-dev",
+    "name"       : "zdh_api-dev",
     "script"     : "./src/api/index.js",
     "watch"      : ["./src/api", "./src/isomorphic", "config"],
     "instances"   : 1,
@@ -9,7 +9,7 @@
         "NODE_ENV": "development",
     }
   }, {
-    "name"       : "bpm_frontend-dev",
+    "name"       : "zdh_frontend-dev",
     "script"     : "./node_modules/.bin/webpack-dev-server",
     "args"       : [
         "--content-base=build",
