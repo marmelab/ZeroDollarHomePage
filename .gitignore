@@ -14,3 +14,5 @@ src/ethereum/Assertions*
 src/ethereum/Test*
 src/ethereum/*.abi
 src/ethereum/*.bin
+src/ethereum/abi/*
+src/ethereum/epm.json

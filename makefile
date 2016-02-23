@@ -8,6 +8,8 @@ CLIENT_NAME ?= leonard
 CLIENT_EMAIL ?= leonard@newapp.com
 CLIENT_PASSWORD ?= supadupa42!
 
+BLOCKCHAIN_ROOT_ADDR ?= A11D88B08A442411E2019080054989094F163FDB
+
 
 # Initialization ===============================================================
 copy-conf:
@@ -206,3 +208,6 @@ log-blockchain:
 delete-blockchain: stop-blockchain
 	eris chains rm zerodollar
 	rm -r ${HOME}/.eris/chains/zerodollar
+
+deploy-contracts: eris-start-keys-services
+	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
