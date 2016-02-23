@@ -181,3 +181,28 @@ create-admin:
 create-client:
 	# TODO: ensure we create a simple user and not an admin
 	./node_modules/babel-cli/bin/babel-node.js ./bin/createAdmin.js ${CLIENT_NAME} ${CLIENT_EMAIL} ${CLIENT_PASSWORD}
+
+# Ethereum =====================================================================
+eris-start-keys-services:
+	@eris version  # Check if eris is installed
+	eris services start keys
+
+init-blockchain: eris-start-keys-services
+	cp -r ./config/eris/zerodollar ${HOME}/.eris/chains/
+	eris chains new zerodollar --dir ${HOME}/.eris/chains/zerodollar
+	eris chains ls --running
+
+run-blockchain:
+	eris chains start zerodollar
+	eris chains ls --running
+
+stop-blockchain:
+	eris chains stop zerodollar
+	eris chains ls --running
+
+log-blockchain:
+	eris chains logs zerodollar
+
+delete-blockchain: stop-blockchain
+	eris chains rm zerodollar
+	rm -r ${HOME}/.eris/chains/zerodollar
