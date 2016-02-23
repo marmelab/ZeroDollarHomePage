@@ -11,6 +11,7 @@ contract ZeroDollarHomePage {
     }
 
     struct Request {
+        uint id;
         string commitSha;
         string authorEmail;
         string authorName;
@@ -21,13 +22,15 @@ contract ZeroDollarHomePage {
     }
 
     mapping (string => Request) _requests; // key is the commit sha
-    uint _numberOfRequests;
+    uint public numberOfRequests;
     string[] _queue;
     uint public queueLength;
+    uint _current;
 
     function ZeroDollarHomePage() {
-        _numberOfRequests = 0;
+        numberOfRequests = 0;
         queueLength = 0;
+        _current = 0;
     }
 
     /*
@@ -47,6 +50,8 @@ contract ZeroDollarHomePage {
             return uint8(ResponseCodes.InvalidAuthorName);
         }
 
+        numberOfRequests += 1;
+        _requests[commitSha].id = numberOfRequests;
         _requests[commitSha].commitSha = commitSha;
         _requests[commitSha].authorEmail = authorEmail;
         _requests[commitSha].authorName = authorName;
@@ -94,28 +99,25 @@ contract ZeroDollarHomePage {
         _requests[commitSha].displayedAt = now;
         delete _queue[0];
         queueLength -= 1;
+        _current = _current + 1;
         return uint8(ResponseCodes.Ok);
     }
 
     /*
      * Get the next image to be displayed on the ZeroDollarHomePage site
      */
-    function getImageToDisplay() returns (string) {
+    function getLastNonPublished() returns (uint id, string commitSha, string authorEmail, string authorName, string imageUrl, uint createdAt, uint claimedAt) {
         if (_queue.length == 0) {
-            return "";
+            return;
         }
 
-        return _requests[_queue[0]].imageUrl;
-    }
-
-    /*
-     * Get the next image to be displayed on the ZeroDollarHomePage site
-     */
-    function getContributorToDisplay() returns (string) {
-        if (_queue.length == 0) {
-            return "";
-        }
-
-        return _requests[_queue[0]].authorName;
+        var request = _requests[_queue[_current]];
+        id = request.id;
+        commitSha = request.commitSha;
+        authorEmail = request.authorEmail;
+        authorName = request.authorName;
+        imageUrl = request.imageUrl;
+        createdAt = request.createdAt;
+        claimedAt = request.claimedAt;
     }
 }
