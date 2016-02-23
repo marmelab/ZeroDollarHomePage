@@ -52,6 +52,7 @@ make test-api-functional
 make test-frontend-unit
 make test-frontend-functional
 make test-isomorphic-unit
+make test-ethereum
 ```
 
 API (and common lib) unit tests using:

@@ -107,4 +107,15 @@ contract ZeroDollarHomePage {
 
         return _requests[_queue[0]].imageUrl;
     }
+
+    /*
+     * Get the next image to be displayed on the ZeroDollarHomePage site
+     */
+    function getContributorToDisplay() returns (string) {
+        if (_queue.length == 0) {
+            return "";
+        }
+
+        return _requests[_queue[0]].authorName;
+    }
 }
