@@ -13,9 +13,12 @@ addons:
     apt:
         sources:
             - ubuntu-toolchain-r-test
+            - ethereum/ethereum-qt
+            - ethereum/ethereum
         packages:
             - gcc-4.8
             - g++-4.8
+            - cpp-ethereum
 
 services:
     - postgresql
