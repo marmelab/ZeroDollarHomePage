@@ -117,10 +117,10 @@ test-ethereum: copy-sol-unit build-ethereum
 	./node_modules/.bin/solunit --dir ./src/ethereum
 
 test-api-unit:
-	@NODE_ENV=test ./node_modules/.bin/mocha --require "./babel-transformer" --require=co-mocha --recursive ./src/api/
+	@NODE_ENV=test NODE_PORT=3050 ./node_modules/.bin/mocha --require "./babel-transformer" --require=co-mocha --recursive ./src/api/
 
 test-api-functional: reset-test-database
-	@NODE_ENV=test NODE_PORT=3010 ./node_modules/.bin/mocha --require "./babel-transformer" --require=co-mocha --recursive ./e2e/api
+	@NODE_ENV=test NODE_PORT=3050 ./node_modules/.bin/mocha --require "./babel-transformer" --require=co-mocha --recursive ./e2e/api
 
 test-frontend-unit:
 	@NODE_ENV=test ./node_modules/.bin/mocha --compilers="css:./webpack/null-compiler,js:babel-core/register" --recursive ./src/frontend/js/**/*.spec.js

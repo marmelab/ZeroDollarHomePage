@@ -10,9 +10,8 @@ import dbClient from './lib/db/client';
 import logger from './lib/logger';
 import xdomainRoute from './lib/xdomainRoute';
 
-import githubApi from 'octonode';
+import githubApiFactory from './github/githubApi';
 import githubHook from 'githubhook';
-import commentOnPullRequestFactory from './github/commentOnPullRequest';
 import handlePullRequestEventFactory from './github/handlePullRequestEvent';
 import initializeGithubHook from './github/initializeGithubHook';
 
@@ -25,6 +24,8 @@ const httpLogger = logger(config.apps.api.logs.http);
 
 // Server logs
 app.use(function* logHttp(next) {
+    this.logger = appLogger;
+
     this.httpLog = {
         method: this.request.method,
         remoteIP: this.request.ip,
@@ -154,7 +155,7 @@ app.use(koaMount('/admin', require('./admin')));
 initializeGithubHook(
     githubHook,
     config.apps.api,
-    handlePullRequestEventFactory(commentOnPullRequestFactory(githubApi, config.apps.api))
+    handlePullRequestEventFactory(githubApiFactory(config.apps.api), config.apps.api)
 );
 
 if (!module.parent || module.parent.filename.indexOf('api/index.js') !== -1) {
