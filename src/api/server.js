@@ -10,10 +10,15 @@ import dbClient from './lib/db/client';
 import logger from './lib/logger';
 import xdomainRoute from './lib/xdomainRoute';
 
+
 import githubApiFactory from './github/githubApi';
 import githubHook from 'githubhook';
 import handlePullRequestEventFactory from './github/handlePullRequestEvent';
 import initializeGithubHook from './github/initializeGithubHook';
+
+import chainAccount from '../../.eris/account.json';
+import smartContractProxy from '../isomorphic/smartContractProxy';
+
 
 const env = process.env.NODE_ENV || 'development';
 const port = config.apps.api.port;
@@ -21,6 +26,11 @@ const port = config.apps.api.port;
 const app = koa();
 const appLogger = logger(config.apps.api.logs.app);
 const httpLogger = logger(config.apps.api.logs.http);
+const zeroDollarContract = smartContractProxy('ZeroDollarHomePage', {
+    url: config.eris.url,
+    account: {...chainAccount, pubKey: chainAccount.pub_key, privKey: chainAccount.priv_key},
+});
+console.log('zeroDollarContract', zeroDollarContract);
 
 // Server logs
 app.use(function* logHttp(next) {
