@@ -1,3 +1,4 @@
+/* globals APP_NAME */
 import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -23,7 +24,7 @@ export class App extends Component {
                 <HelmetTitle />
                 <div className="row">
                     <nav className="navbar navbar-fixed-top navbar-dark bg-primary">
-                        <a className="navbar-brand" href="#">New App</a>
+                        <a className="navbar-brand" href="#">{APP_NAME}</a>
                         <ul className="nav navbar-nav">
                             <li className="nav-item">
                                 <Link className="nav-link" to="/">Home</Link>
