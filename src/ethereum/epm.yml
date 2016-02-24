@@ -1,0 +1,7 @@
+jobs:
+
+- name: deployZeroDollarHomePage
+  job:
+    deploy:
+      contract: ZeroDollarHomePage.sol
+      wait: true
