@@ -1,7 +1,12 @@
+import querystring from 'querystring';
+
 export default (githubApi, config) => (repositoryFullName, pullRequestNumber, authorUserName) => {
     const client = githubApi.client(config.github);
     const ghissue = client.pr(repositoryFullName, pullRequestNumber);
-    const link = `${config.frontendUrl}/claim?pr=${pullRequestNumber}`;
+    const link = `${config.frontendUrl}/claim?${querystring.stringify({
+        repository: repositoryFullName,
+        pr: pullRequestNumber,
+    })}`;
     const appLink = config.frontendUrl;
 
     ghissue.createComment({

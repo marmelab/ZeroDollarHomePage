@@ -20,7 +20,7 @@ describe('github', () => {
                             return {
                                 createComment: (options) => {
                                     expect(options.body).to.contains('@frodo');
-                                    expect(options.body).to.contains('[page](http://marmelab.com/claim?pr=42)');
+                                    expect(options.body).to.contains('[page](http://marmelab.com/claim?repository=marmelab%2Ftest-repository&pr=42)');
                                     expect(options.body).to.contains('http://marmelab.com');
                                     done();
                                 },
