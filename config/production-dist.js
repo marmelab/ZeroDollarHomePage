@@ -7,6 +7,22 @@ module.exports = {
                 password: 'DB_PASSWORD',
                 database: 'DB_NAME',
             },
+            github: {
+                username: '',
+                password: '',
+            },
+            // or
+            // github: {
+            //      id: 'abcdefghijklmno',
+            //      secret: 'abcdefghijk',
+            // },
+            //
+            // or
+            // github: 'access_token',
+            githubHook: {
+                host: 'localhost',
+                // port: 3000,
+            },
         },
     },
 };

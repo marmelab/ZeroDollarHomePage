@@ -10,6 +10,12 @@ import dbClient from './lib/db/client';
 import logger from './lib/logger';
 import xdomainRoute from './lib/xdomainRoute';
 
+import githubApi from 'octonode';
+import githubHook from 'githubhook';
+import commentOnPullRequestFactory from './github/commentOnPullRequest';
+import handlePullRequestEventFactory from './github/handlePullRequestEvent';
+import initializeGithubHook from './github/initializeGithubHook';
+
 const env = process.env.NODE_ENV || 'development';
 const port = config.apps.api.port;
 
@@ -143,6 +149,13 @@ if (env !== 'development') {
 
 app.use(koaMount('/api', require('./api')));
 app.use(koaMount('/admin', require('./admin')));
+
+// Github hook initialization
+initializeGithubHook(
+    githubHook,
+    config.apps.api,
+    handlePullRequestEventFactory(commentOnPullRequestFactory(githubApi, config.apps.api))
+);
 
 if (!module.parent || module.parent.filename.indexOf('api/index.js') !== -1) {
     app.listen(port);

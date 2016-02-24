@@ -10,6 +10,7 @@ module.exports = {
         },
         api: {
             allowOrigin: [frontendUrl],
+            frontendUrl: frontendUrl,
             db: {
                 driver: 'pg',
                 host: 'DB_HOST',
@@ -17,6 +18,14 @@ module.exports = {
                 user: 'DB_USER',
                 password: 'DB_PASSWORD',
                 database: 'DB_NAME',
+            },
+            github: {
+                username: '',
+                password: '',
+            },
+            githubHook: {
+                host: 'localhost',
+                // port: 3000,
             },
             logs: {
                 app: {Console: { timestamp: true, colorize: true, level: 'error' }},
@@ -57,6 +66,14 @@ module.exports = {
             enableDevTools: true,
             history: 'createBrowserHistory',
         },
+        // or
+        // github: {
+        //      id: 'abcdefghijklmno',
+        //      secret: 'abcdefghijk',
+        // },
+        //
+        // or
+        // github: 'access_token',
     },
     babel_ignore: /node_modules\/(?!admin-config|fakerest)/,
 };
