@@ -14,6 +14,22 @@ module.exports = {
                 password: '',
                 database: 'travis_ci_test',
             },
+            github: {
+                username: '',
+                password: '',
+            },
+            // or
+            // github: {
+            //      id: 'abcdefghijklmno',
+            //      secret: 'abcdefghijk',
+            // },
+            //
+            // or
+            // github: 'access_token',
+            githubHook: {
+                host: 'localhost',
+                // port: 3000,
+            },
             security: {
                 rateLimitOptions: {
                     max: 99,
