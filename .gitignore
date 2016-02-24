@@ -16,3 +16,4 @@ src/ethereum/*.abi
 src/ethereum/*.bin
 src/ethereum/abi/*
 src/ethereum/epm.json
+.eris-addr.txt

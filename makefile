@@ -8,7 +8,7 @@ CLIENT_NAME ?= leonard
 CLIENT_EMAIL ?= leonard@newapp.com
 CLIENT_PASSWORD ?= supadupa42!
 
-BLOCKCHAIN_ROOT_ADDR ?= A11D88B08A442411E2019080054989094F163FDB
+BLOCKCHAIN_ROOT_ADDR ?= $(shell cat ./.eris-addr.txt)
 
 
 # Initialization ===============================================================
@@ -190,7 +190,10 @@ eris-start-keys-services:
 	eris services start keys
 
 init-blockchain: eris-start-keys-services
-	cp -r ./config/eris/zerodollar ${HOME}/.eris/chains/
+	eris chains stop -rxf zerodollar
+	eris chains make --account-types=Full:1 zerodollar
+	cat ${HOME}/.eris/chains/zerodollar/addresses.csv | cut -d ',' -f 1 > ./.eris-addr.txt
+	eris keys export $(shell cat ./.eris-addr.txt)
 	eris chains new zerodollar --dir ${HOME}/.eris/chains/zerodollar
 	eris chains ls --running
 
