@@ -1,6 +1,5 @@
 import fs from 'fs';
 import eris from 'eris-contracts';
-import contractData from '../ethereum/epm.json';
 
 export const cleanContractValue = entry => {
     if (entry.c) return entry.c[0];
@@ -20,9 +19,17 @@ export function proxifyFunction(replacedFunction) {
     };
 }
 
-export function getContractFromName(name, {url, account}) {
+export function getContractFromName(name, {url, account}, ethDirectory = './src/ethereum') {
+    try {
+        fs.accessSync(`${ethDirectory}/epm.json`, fs.F_OK);
+    } catch (err) {
+        throw new Error(`Unable to fetch eris package manager result (epm.json).
+                         Have you compile your contracts ?`);
+    }
+
+    const contractData = JSON.parse(fs.readFileSync(`${ethDirectory}/epm.json`));
     const address = contractData[`deploy${name}`];
-    const abi = JSON.parse(fs.readFileSync(`./src/ethereum/abi/${address}`));
+    const abi = JSON.parse(fs.readFileSync(`${ethDirectory}/abi/${address}`));
     const manager = eris.newContractManagerDev(url, account);
     return manager.newContractFactory(abi).at(address);
 }
