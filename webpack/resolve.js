@@ -7,5 +7,6 @@ export default function() {
             ethereum: 'src/ethereum',
             isomorphic: 'src/isomorphic',
         },
+        extensions: ['', '.js'],
     };
 }

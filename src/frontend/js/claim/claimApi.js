@@ -31,7 +31,7 @@ export const fetchPullRequest = ({ repository, pullRequestNumber }, jwt) => {
     }));
 };
 
-export const fetchClaim = ({ repository, pullRequestNumber, image }, jwt) => {
+export const fetchClaim = (repository, pullRequestNumber, image, jwt) => {
     const headers = {
         'Accept': 'application/json',
     };
@@ -59,7 +59,7 @@ export const fetchClaim = ({ repository, pullRequestNumber, image }, jwt) => {
         return response.json();
     })
     .then(json => {
-        return { item: json };
+        return { timeBeforeDisplay: json.timeBeforeDisplay };
     }, error => ({
         error,
     }));

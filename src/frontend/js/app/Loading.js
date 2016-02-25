@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Icon from 'react-fa';
 
-const Loading = ({size = ''}) => (
+const Loading = ({size = undefined}) => (
     <Icon name="spinner" spin size={size} />
 );
 

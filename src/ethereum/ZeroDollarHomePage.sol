@@ -4,7 +4,6 @@ contract ZeroDollarHomePage {
     enum ResponseCodes {
         Ok,
         InvalidPullRequestId,
-        InvalidAuthorEmail,
         InvalidAuthorName,
         InvalidImageUrl,
         RequestNotFound,

@@ -190,12 +190,12 @@ eris-start-keys-services:
 	eris services start keys
 
 new-blockchain-config: eris-start-keys-services
-	eris chains stop -rxf zerodollar
 	eris chains make --account-types=Full:1 zerodollar
-	rm -r ./.eris && mkdir -p ./.eris
+	rm -rf ./.eris && mkdir -p ./.eris
 	cat ${HOME}/.eris/chains/zerodollar/addresses.csv | cut -d ',' -f 1 > ./.eris/addr.txt
 
 init-blockchain: new-blockchain-config
+	eris chains stop -rxf zerodollar
 	eris keys export $(shell cat ./.eris/addr.txt)
 	eris keys convert $(shell cat ./.eris/addr.txt) > ./.eris/account.json
 	eris chains new zerodollar --dir ${HOME}/.eris/chains/zerodollar
@@ -204,6 +204,7 @@ init-blockchain: new-blockchain-config
 run-blockchain:
 	eris chains start zerodollar
 	eris chains ls --running
+	make deploy-contracts
 
 stop-blockchain:
 	eris chains stop zerodollar
