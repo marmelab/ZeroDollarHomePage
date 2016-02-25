@@ -20,6 +20,13 @@ export function proxifyFunction(replacedFunction) {
     };
 }
 
+export function getContractFromName(name, {url, account}) {
+    const address = contractData[`deploy${name}`];
+    const abi = JSON.parse(fs.readFileSync(`./src/ethereum/abi/${address}`));
+    const manager = eris.newContractManagerDev(url, account);
+    return manager.newContractFactory(abi).at(address);
+}
+
 /**
  * Usage:
  *      const mySmartContract = smartContractProxy('MySmartContract', {
@@ -29,11 +36,8 @@ export function proxifyFunction(replacedFunction) {
  *      yield mySmartContract.setAttribute('new value');
  *      const result = yield mySmartContract.getAttribute();
  */
-export default function smartContractFactory(name, {url, account}, excludedFields = []) {
-    const address = contractData[`deploy${name}`];
-    const abi = JSON.parse(fs.readFileSync(`./src/ethereum/abi/${address}`));
-    const manager = eris.newContractManagerDev(url, account);
-    const contract = manager.newContractFactory(abi).at(address);
+export default function smartContractFactory(name, account, excludedFields = [], getContract = getContractFromName) {
+    const contract = getContract(name, account);
 
     // Exclude default functions
     ['getContributorToDisplay'].forEach(field => excludedFields.push(field));
