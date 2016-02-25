@@ -24,11 +24,20 @@ contract ZeroDollarHomePage {
     uint[] _queue;
     uint public queueLength;
     uint _current;
+    address owner;
 
     function ZeroDollarHomePage() {
+        owner = msg.sender;
+
         numberOfRequests = 0;
         queueLength = 0;
         _current = 0;
+    }
+
+    function remove() {
+        if (msg.sender == owner){
+            suicide(owner);
+        }
     }
 
     /*
