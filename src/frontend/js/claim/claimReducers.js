@@ -1,0 +1,60 @@
+import { claimActionTypes } from './claimActions';
+
+const initialState = {
+    claiming: false,
+    claimError: null,
+    feedback: null,
+    item: null,
+    error: null,
+    loading: false,
+};
+
+export default (state = initialState, { type, payload }) => {
+    switch (type) {
+    case claimActionTypes.item.REQUEST:
+        return {
+            ...state,
+            loading: true,
+        };
+
+    case claimActionTypes.item.SUCCESS:
+        return {
+            ...state,
+            item: payload,
+            error: null,
+            loading: false,
+        };
+
+    case claimActionTypes.item.FAILURE:
+        return {
+            ...state,
+            item: null,
+            error: payload,
+            loading: false,
+        };
+
+    case claimActionTypes.claim.REQUEST:
+        return {
+            ...state,
+            claiming: true,
+        };
+
+    case claimActionTypes.claim.SUCCESS:
+        return {
+            ...state,
+            feedback: payload,
+            claimError: null,
+            claiming: false,
+        };
+
+    case claimActionTypes.claim.FAILURE:
+        return {
+            ...state,
+            claimError: payload,
+            claiming: false,
+        };
+
+    default:
+        return state;
+    }
+};
