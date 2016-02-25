@@ -75,5 +75,8 @@ module.exports = {
         // or
         // github: 'access_token',
     },
+    eris: {
+        url: 'http://localhost:1337/rpc',
+    },
     babel_ignore: /node_modules\/(?!admin-config|fakerest)/,
 };
