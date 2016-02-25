@@ -88,5 +88,8 @@ module.exports = {
         url: 'http://localhost:1337/rpc',
         account_path: __dirname + '/../.eris/account.json',
     },
+    ethereum: {
+        url: 'http://localhost:8545',
+    },
     babel_ignore: /node_modules\/(?!admin-config|fakerest)/,
 };
