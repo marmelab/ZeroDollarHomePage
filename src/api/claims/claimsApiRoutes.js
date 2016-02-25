@@ -5,10 +5,12 @@ import koaRoute from 'koa-route';
 import methodFilter from '../lib/middlewares/methodFilter';
 import githubApiFactory from '../github/githubApi';
 import saveFileFactory from './uploadToS3';
-import registerContract from './registerContract';
+import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
+const newRequest = newRequestFactory(config.eris);
+
 let githubApi;
 
 app.use(methodFilter(['GET', 'POST']));
@@ -40,7 +42,7 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         imageUrl = yield saveFile(`${pullrequest.id}.mp4`, file);
     }
 
-    const timeBeforeDisplay = yield registerContract(pullrequest.id, pullrequest.user.login, imageUrl);
+    const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login, imageUrl);
 
     this.body = { timeBeforeDisplay };
 }));
