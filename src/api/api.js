@@ -3,13 +3,13 @@ import koaMount from 'koa-mount';
 import koaRoute from 'koa-route';
 
 import authenticateApiRoutes from './authentication/authenticateApiRoutes';
-import pullrequestsApiRoutes from './pullrequests/pullrequestsApiRoutes';
+import claimsApiRoutes from './claims/claimsApiRoutes';
 import methodFilter from './lib/middlewares/methodFilter';
 
 const app = koa();
 
 app.use(koaMount('/', authenticateApiRoutes));
-app.use(koaMount('/pullrequests', pullrequestsApiRoutes));
+app.use(koaMount('/claims', claimsApiRoutes));
 
 
 app.use(methodFilter(['GET']));

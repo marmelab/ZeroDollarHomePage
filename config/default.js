@@ -27,6 +27,11 @@ module.exports = {
                 host: 'localhost',
                 // port: 3000,
             },
+            s3: {
+                apiKey: '',
+                secret: '',
+                bucket: '',
+            },
             logs: {
                 app: {Console: { timestamp: true, colorize: true, level: 'error' }},
                 http: {},

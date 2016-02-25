@@ -1,7 +1,7 @@
 import { call, fork, put, take } from 'redux-saga/effects';
 import { routeActions } from 'react-router-redux';
 import claimActions, { claimActionTypes } from './claimActions';
-import { fetchPullRequest } from './claimApi';
+import { fetchPullRequest, fetchClaim as fetchClaimApi } from './claimApi';
 import { loadItemFactory } from '../app/entities/sagas';
 
 export const loadPullRequest = loadItemFactory(claimActionTypes, claimActions);
@@ -22,6 +22,7 @@ export const claimPullRequest = function* claimPullRequest(getState, fetchClaim)
 
 const sagas = function* sagas() {
     yield fork(loadPullRequest, fetchPullRequest);
+    yield fork(claimPullRequest, fetchClaimApi);
 };
 
 export default sagas;
