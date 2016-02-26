@@ -1,6 +1,6 @@
-import erisSmartContractFactory from './erisSmartContract';
-import loadErisAccount from './loadErisAccount';
-import ethereumSmartContractFactory from './ethereumSmartContract';
+import erisSmartContractFactory from './smartContract/erisSmartContract';
+import loadErisAccount from './smartContract/loadErisAccount';
+import ethereumSmartContractFactory from './smartContract/ethereumSmartContract';
 
 export default (config, name) => {
     switch (config.provider) {

@@ -4,13 +4,13 @@ In order to install the project, you can install either Ethereum or Eris blockch
 
 The API will remain the same in all cases: the point is to run a blockchain and create a node which communicate with your application through RPC protocol.
 
-See [configurations files](../config/default.js) for more informations.
+See [configurations files](../config/default.js) for more details.
 
 ## Eris Industries
 
 The default blockchain provider, it runs a sandbox blockchain with Docker.
 
-[Install the `eris` command tool](https://docs.erisindustries.com/tutorials/getting-started/), then you can simply run: 
+[Install the `eris` command tool](https://docs.erisindustries.com/tutorials/getting-started/), then you can simply run:
 
 ```bash
 # Install and run a blockchain called 'zerodollar' and send smart contracts into
@@ -26,7 +26,7 @@ make log-blockchain
 make delete-blockchain
 ```
 
-If your stuck with eris or if you simply want to delete all and restart, just type `make flush-eris && eris init`.
+If you are stuck with eris or if you simply want to delete all and restart, just type `make flush-eris && eris init`.
 
 For more informations about Eris Industries and its blockchain management, see [these tutorials](https://docs.erisindustries.com/tutorials/).
 
@@ -42,7 +42,7 @@ After that, you can run a node with a command like
 geth --datadir="/tmp/eth/10/01" --ipcdisable --networkid 42 --rpc console 2>> /tmp/eth/10/01.log
 ```
 
-:warning: Be sure to specify a `--networkid` different from `1` which is [the real Ethereum network available here](https://ethstats.net/).
+**Be sure to specify a `--networkid` different of `1` which is [the real Ethereum network available here](https://ethstats.net/).**
 
 Note that your node (the `geth` command above) needs to keep running throughout your application is switched on.
 
