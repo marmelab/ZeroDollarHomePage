@@ -4,7 +4,7 @@ import koa from 'koa';
 import koaRoute from 'koa-route';
 import methodFilter from '../lib/middlewares/methodFilter';
 import githubApiFactory from '../github/githubApi';
-import saveFileFactory from './uploadToS3';
+import saveFileFactory from '../lib/s3/uploadToS3';
 import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();

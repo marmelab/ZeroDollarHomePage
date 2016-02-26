@@ -14,6 +14,7 @@ import githubApiFactory from './github/githubApi';
 import githubHook from 'githubhook';
 import handlePullRequestEventFactory from './github/handlePullRequestEvent';
 import initializeGithubHook from './github/initializeGithubHook';
+import cronInitializer from './cron';
 
 const env = process.env.NODE_ENV || 'development';
 const port = config.apps.api.port;
@@ -147,6 +148,8 @@ if (env !== 'development') {
     // gzip compression
     app.use(compress());
 }
+
+cronInitializer();
 
 app.use(koaMount('/api', require('./api')));
 app.use(koaMount('/admin', require('./admin')));

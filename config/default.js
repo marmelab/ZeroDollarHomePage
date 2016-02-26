@@ -65,6 +65,10 @@ module.exports = {
                 },
                 rateLimitOptions: {},
             },
+            cron: {
+                enabled: false,
+                schedule: '00 00 * * *', // every day at midnight
+            },
         },
         frontend: {
             api_url: apiUrl + '/api',

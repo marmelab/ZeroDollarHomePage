@@ -52,6 +52,7 @@
     "ng-admin": "marmelab/ng-admin",
     "node-postgres-named": "~2.4.0",
     "node-sass": "~3.4.2",
+    "node-schedule": "~1.0.0",
     "numeral": "~1.5.3",
     "octonode": "~0.7.4",
     "pg": "~4.4.3",
@@ -74,6 +75,7 @@
     "sass-loader": "~3.1.2",
     "source-map-support": "~0.4.0",
     "style-loader": "~0.12.3",
+    "tether": "~1.1.1",
     "thunkify": "~2.1.2",
     "uid": "0.0.2",
     "url-loader": "~0.5.6",
@@ -115,10 +117,9 @@
     "redux-mock-store": "0.0.3",
     "selenium-standalone": "~4.9.0",
     "sinon": "2.0.0-pre",
+    "sol-unit": "~0.5.5",
     "solc": "~0.2.2-2",
     "solidity-loader": "~0.0.2",
-    "sol-unit": "~0.5.5",
-    "tether": "~1.1.1",
     "webpack-dev-server": "~1.14.1"
   },
   "scripts": {

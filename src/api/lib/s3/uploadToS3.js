@@ -1,12 +1,6 @@
 import knox from 'knox';
 
-export default (config) => (filename, stream) => new Promise((resolve, reject) => {
-    const client = knox.createClient({
-        key: config.apiKey,
-        secret: config.secret,
-        bucket: config.bucket,
-    });
-
+export const uploadToS3 = client => (filename, stream) => new Promise((resolve, reject) => {
     const chunks = [];
     stream.on('data', chunk => chunks.push(chunk));
     stream.on('error', err => reject(err));
@@ -30,3 +24,13 @@ export default (config) => (filename, stream) => new Promise((resolve, reject) =
         });
     });
 });
+
+export default (config) => (filename, stream) => {
+    const client = knox.createClient({
+        key: config.apiKey,
+        secret: config.secret,
+        bucket: config.bucket,
+    });
+
+    return uploadToS3(client)(filename, stream);
+};
