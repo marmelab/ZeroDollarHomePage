@@ -74,16 +74,12 @@ contract ZeroDollarHomePage {
     /*
      * Marke a pull request with its image has having been displayed.
      */
-    function closeRequest(uint pullRequestId) returns (uint8) {
-        if (pullRequestId <= 0) {
-            return uint8(ResponseCodes.InvalidPullRequestId);
+    function closeRequest() returns (uint8) {
+        if (queueLength == 0) {
+            return uint8(ResponseCodes.EmptyQueue);
         }
 
-        if (_requests[pullRequestId].id <= 0) {
-            return uint8(ResponseCodes.RequestNotFound);
-        }
-
-        _requests[pullRequestId].displayedAt = now;
+        _requests[_queue[_current]].displayedAt = now;
         delete _queue[0];
         queueLength -= 1;
         _current = _current + 1;
@@ -94,8 +90,9 @@ contract ZeroDollarHomePage {
      * Get the next image to be displayed on the ZeroDollarHomePage site
      */
     function getLastNonPublished() returns (uint8 code, uint id, string authorName, string imageUrl, uint createdAt) {
-        if (_queue.length == 0) {
+        if (queueLength == 0) {
             code = uint8(ResponseCodes.EmptyQueue);
+            return;
         }
 
         var request = _requests[_queue[_current]];
