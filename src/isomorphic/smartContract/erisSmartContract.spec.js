@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import smartContract from './smartContractProxy';
+import smartContract from './erisSmartContract';
 
-describe('Smart Contract Proxy', () => {
+describe('Eris Smart Contract', () => {
     let getContract;
 
     beforeEach(() => {

@@ -9,7 +9,7 @@ import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
-const newRequest = newRequestFactory(config.eris);
+const newRequest = newRequestFactory(config.blockchain);
 
 let githubApi;
 
@@ -38,7 +38,7 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
 
     let imageUrl;
     let file;
-    while ((file = yield parts)) {
+    while ((file = yield parts)) { // eslint-disable-line no-cond-assign
         imageUrl = yield saveFile(`${pullrequest.id}.jpg`, file);
     }
 

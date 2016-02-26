@@ -1,10 +1,7 @@
 import fs from 'fs';
 import eris from 'eris-contracts';
 
-export const cleanContractValue = entry => {
-    if (entry.c) return entry.c[0];
-    return entry;
-};
+import cleanContractValue from './cleanSmartContractValue';
 
 export function proxifyFunction(replacedFunction) {
     return (...args) => {

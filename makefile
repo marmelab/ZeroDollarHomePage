@@ -187,7 +187,7 @@ create-client:
 # Ethereum =====================================================================
 eris-start-keys-services:
 	@eris version  # Check if eris is installed
-	eris services start keys
+	eris services start keys && sleep 3
 
 new-blockchain-config: eris-start-keys-services
 	eris chains make --account-types=Full:1 zerodollar
@@ -219,3 +219,8 @@ delete-blockchain: stop-blockchain
 
 deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
+
+flush-eris:
+	docker rm -f $(shell docker ps -aq)
+	rm -rf ${HOME}/.eris ./src/ethereum/abi
+	rm -f ./src/ethereum/epm.json ./src/ethereum/*.abi
