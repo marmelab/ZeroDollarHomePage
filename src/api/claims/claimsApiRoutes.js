@@ -38,7 +38,7 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
 
     let imageUrl;
     let file;
-    while ((file = yield parts)) {
+    while ((file = yield parts)) { // eslint-disable-line no-cond-assign
         imageUrl = yield saveFile(`${pullrequest.id}.jpg`, file);
     }
 

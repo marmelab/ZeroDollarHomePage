@@ -27,10 +27,13 @@ export default function ethereumSmartContract(name, client = buildClient()) {
         .forEach(field => {
             if (field.type === 'function') {
                 const replacedAttribute = instance[field.name];
-                instance[field.name] = (...args) => {
-                    const result = replacedAttribute.call(...args);
-                    return cleanContractValue(result);
-                };
+                instance[field.name] = (...args) => new Promise((resolve, reject) => {
+                    replacedAttribute.call(...args, (err, value) => {
+                        if (err) return reject(err);
+                        if (Array.isArray(value)) return resolve(value.filter(v => !!v).map(cleanContractValue));
+                        return resolve(cleanContractValue(value));
+                    });
+                });
             }
         });
 

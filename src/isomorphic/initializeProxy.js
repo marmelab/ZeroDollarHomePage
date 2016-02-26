@@ -7,11 +7,11 @@ export default (config, name) => {
     case 'ethereum':
         return ethereumSmartContractFactory(name);
     case 'eris':
-    default:
-        const account = loadErisAccount(config.eris.account_path);
         return erisSmartContractFactory(name, {
             url: config.url,
-            account,
+            account: loadErisAccount(config.eris.account_path),
         });
+    default:
+        throw new Error(`Unable to found "${config.provider}" blockchain provider.`);
     }
 };
