@@ -18,8 +18,8 @@ export const compileContract = (client, name) => {
     return client.eth.contract(compiledContract.info.abiDefinition);
 };
 
-export default function ethereumSmartContract(name, client = buildClient()) {
-    const contract = compileContract(client, name);
+export default function ethereumSmartContract(name, client = buildClient(), compile = compileContract) {
+    const contract = compile(client, name);
     const instance = contract.at(client.eth.coinbase);
 
     instance.abi
