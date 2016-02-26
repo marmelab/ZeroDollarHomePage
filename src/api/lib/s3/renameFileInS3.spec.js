@@ -9,8 +9,10 @@ describe('renameFileInS3', () => {
                 expect(source).to.equal('source.jpg');
                 expect(dest).to.equal('current.jpg');
                 expect(headers).to.deep.equal({
+                    'x-amz-metadata-directive': 'REPLACE',
                     'Content-Type': 'image/jpeg',
                     'x-amz-acl': 'public-read',
+                    'x-amz-meta-Cache-Control': 'max-age=86400',
                     'Expires': moment().endOf('day').utc().toISOString(),
                 });
                 cb(null, {statusCode: 200});
