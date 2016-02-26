@@ -2,7 +2,10 @@ import erisSmartContractFactory from './smartContract/erisSmartContract';
 import loadErisAccount from './smartContract/loadErisAccount';
 import ethereumSmartContractFactory from './smartContract/ethereumSmartContract';
 
-export default (config, name) => {
+/**
+ * @TODO Remove the contract's name from here
+ */
+export default (config, name = 'ZeroDollarHomePage') => {
     switch (config.provider) {
     case 'ethereum':
         return ethereumSmartContractFactory(name);

@@ -44,7 +44,7 @@ geth --datadir="/tmp/eth/10/01" --ipcdisable --networkid 42 --rpc console 2>> /t
 
 **Be sure to specify a `--networkid` different of `1` which is [the real Ethereum network available here](https://ethstats.net/).**
 
-Note that your node (the `geth` command above) needs to keep running throughout your application is switched on.
+Note that your node (the `geth` command above) needs to keep running while your application is switched on.
 
 Finally, change your configuration to use Ethereum blockchain or run your app with the following environment variable `BLOCKCHAIN_PROVIDER=ethereum`.
 
