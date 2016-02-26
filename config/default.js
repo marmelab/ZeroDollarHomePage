@@ -67,7 +67,7 @@ module.exports = {
             },
             cron: {
                 enabled: true,
-                schedule: '* * * * *', // every day at midnight
+                schedule: '00 00 * * *', // every day at midnight
             },
         },
         frontend: {

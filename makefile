@@ -195,7 +195,7 @@ new-blockchain-config: eris-start-keys-services
 	cat ${HOME}/.eris/chains/zerodollar/addresses.csv | cut -d ',' -f 1 > ./.eris/addr.txt
 
 init-blockchain: new-blockchain-config
-	#eris chains stop -rxf zerodollar
+	eris chains stop -rxf zerodollar
 	eris keys export $(shell cat ./.eris/addr.txt)
 	eris keys convert $(shell cat ./.eris/addr.txt) > ./.eris/account.json
 	eris chains new zerodollar --dir ${HOME}/.eris/chains/zerodollar
