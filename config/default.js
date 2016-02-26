@@ -27,6 +27,11 @@ module.exports = {
                 host: 'localhost',
                 // port: 3000,
             },
+            s3: {
+                apiKey: '',
+                secret: '',
+                bucket: '',
+            },
             logs: {
                 app: {Console: { timestamp: true, colorize: true, level: 'error' }},
                 http: {},
@@ -77,6 +82,7 @@ module.exports = {
     },
     eris: {
         url: 'http://localhost:1337/rpc',
+        account_path: __dirname + '/../.eris/account.json',
     },
     babel_ignore: /node_modules\/(?!admin-config|fakerest)/,
 };

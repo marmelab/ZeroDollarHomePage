@@ -30,6 +30,11 @@ module.exports = {
                 host: 'localhost',
                 // port: 3000,
             },
+            s3: {
+                apiKey: '',
+                secret: '',
+                bucket: '',
+            },
             security: {
                 rateLimitOptions: {
                     max: 99,

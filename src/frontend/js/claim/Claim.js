@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import HelmetTitle from '../app/HelmetTitle';
 import claimActions from './claimActions';
-import moment from 'moment';
 import Loading from '../app/Loading';
 import InvalidPullRequest from './InvalidPullRequest';
 import LoadingPullRequest from './LoadingPullRequest';
@@ -29,6 +29,9 @@ const styles = {
     },
     buttonBar: {
         marginTop: '1em',
+    },
+    feedback: {
+        marginLeft: '1em',
     },
 };
 
@@ -58,15 +61,15 @@ class Claim extends Component {
     onSubmit() {
         const { pullRequestNumber, repository } = this.props;
 
-        this.props.claim({
-            image: this.state.image,
-            pullRequestNumber,
+        this.props.claim(
             repository,
-        });
+            pullRequestNumber,
+            this.state.image
+        );
     }
 
     render() {
-        const { claiming, error, loading, pullRequest, pullRequestNumber, repository } = this.props;
+        const { claimError, claiming, error, loading, pullRequest, pullRequestNumber, repository, timeBeforeDisplay } = this.props;
 
         return (
             <div className="container claim-page">
@@ -96,6 +99,8 @@ class Claim extends Component {
                                         <button onClick={this.onSubmit.bind(this)} className="btn btn-primary btn-lg" disabled={!this.state.image || claiming}>
                                             {claiming && <Loading />} Submit !
                                         </button>
+                                        {claimError && <span className="text-danger" style={styles.feedback}>An error occured while claiming your pull request</span>}
+                                        {timeBeforeDisplay && <span className="text-success" style={styles.feedback}>Thanks ! You image should be displayed {timeBeforeDisplay.fromNow()} ({timeBeforeDisplay.format('LL')})</span>}
                                     </p>
                                 </div>
                             </div>
@@ -117,6 +122,7 @@ Claim.propTypes = {
     pullRequest: PropTypes.object,
     pullRequestNumber: PropTypes.string,
     repository: PropTypes.string,
+    timeBeforeDisplay: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -128,6 +134,7 @@ function mapStateToProps(state) {
         pullRequest: state.claim.item,
         pullRequestNumber: state.routing.location.query && state.routing.location.query.pr,
         repository: state.routing.location.query && state.routing.location.query.repository,
+        timeBeforeDisplay: state.claim.timeBeforeDisplay,
     };
 }
 

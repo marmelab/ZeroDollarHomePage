@@ -23,6 +23,11 @@ module.exports = {
                 host: 'localhost',
                 // port: 3000,
             },
+            s3: {
+                apiKey: '',
+                secret: '',
+                bucket: '',
+            },
         },
         frontend: {
             history: 'createHashHistory',

@@ -1,9 +1,10 @@
 import { claimActionTypes } from './claimActions';
+import moment from 'moment';
 
 const initialState = {
     claiming: false,
     claimError: null,
-    feedback: null,
+    timeBeforeDisplay: null,
     item: null,
     error: null,
     loading: false,
@@ -42,7 +43,7 @@ export default (state = initialState, { type, payload }) => {
     case claimActionTypes.claim.SUCCESS:
         return {
             ...state,
-            feedback: payload,
+            timeBeforeDisplay: moment.unix(payload),
             claimError: null,
             claiming: false,
         };
