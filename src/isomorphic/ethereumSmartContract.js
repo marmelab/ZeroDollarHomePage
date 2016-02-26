@@ -5,7 +5,7 @@ import Web3 from 'web3';
 
 import cleanContractValue from './cleanSmartContractValue';
 
-export const buildClient = (url = config.ethereum.url) => {
+export const buildClient = (url = config.blockchain.ethereum.url) => {
     const web3 = new Web3();
     web3.setProvider(new Web3.providers.HttpProvider(url));
 

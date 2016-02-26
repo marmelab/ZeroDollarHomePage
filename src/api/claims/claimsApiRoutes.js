@@ -9,7 +9,7 @@ import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
-const newRequest = newRequestFactory(config.eris);
+const newRequest = newRequestFactory(config.blockchain);
 
 let githubApi;
 

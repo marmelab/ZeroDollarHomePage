@@ -13,6 +13,6 @@ export const newRequest = (smartContractProxy, getReponseCodeMessage) => functio
 };
 
 export default (config) => function* newRequestDefault(pullrequestId, authorName, imageUrl) {
-    const smartContractProxy = initializeProxy(config);
+    const smartContractProxy = initializeProxy(config, 'ZeroDollarHomePage');
     return newRequest(smartContractProxy, getReponseCodeMessageFunc)(pullrequestId, authorName, imageUrl);
 };

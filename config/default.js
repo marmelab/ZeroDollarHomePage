@@ -1,6 +1,7 @@
 var apiPort = process.env.NODE_PORT || 3000; // eslint-disable-line no-var
 var apiUrl = 'http://localhost:' + apiPort; // eslint-disable-line no-var
 var frontendUrl = 'http://localhost:8080'; // eslint-disable-line no-var
+var blockchainProvider = process.env.BLOCKCHAIN_PROVIDER || 'eris'; // eslint-disable-line no-var
 
 module.exports = {
     appName: 'Zero Dollar Home Page',
@@ -84,12 +85,15 @@ module.exports = {
         // or
         // github: 'access_token',
     },
-    eris: {
-        url: 'http://localhost:1337/rpc',
-        account_path: __dirname + '/../.eris/account.json',
-    },
-    ethereum: {
-        url: 'http://localhost:8545',
+    blockchain: {
+        provider: blockchainProvider, // eris or ethereum
+        eris: {
+            url: 'http://localhost:1337/rpc',
+            account_path: __dirname + '/../.eris/account.json',
+        },
+        ethereum: {
+            url: 'http://localhost:8545',
+        },
     },
     babel_ignore: /node_modules\/(?!admin-config|fakerest)/,
 };
