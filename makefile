@@ -184,6 +184,9 @@ create-client:
 	# TODO: ensure we create a simple user and not an admin
 	./node_modules/babel-cli/bin/babel-node.js ./bin/createAdmin.js ${CLIENT_NAME} ${CLIENT_EMAIL} ${CLIENT_PASSWORD}
 
+init-start-image:
+	./node_modules/babel-cli/bin/babel-node.js ./bin/renameStartImageInS3.js 'start.jpg';
+
 # Ethereum =====================================================================
 eris-start-keys-services:
 	@eris version  # Check if eris is installed
