@@ -24,12 +24,14 @@ contract ZeroDollarHomePageTest is Asserter {
         assertUintGT(publicationDate, now + 1 days, "Date should have been greater than now + 1 day");
     }
 
-    function test_closeRequest_should_returns_Ok() {
+    function test_closeRequest_should_returns_Ok_and_remove_request_from_queue() {
         ZeroDollarHomePage app = new ZeroDollarHomePage();
         app.newRequest(42, "toto", "http://google.com/image.jpg");
 
-        var result = app.closeRequest(42);
+        var result = app.closeRequest();
         assertUintsEqual(result, uint8(ZeroDollarHomePage.ResponseCodes.Ok), "Should have returned Ok");
+        var (code,,,) = app.getLastNonPublished();
+        assertUintsEqual(code, 5, "Should have returned id 5");
     }
 
     function test_getLastNonPublished_should_returns_the_request() {
@@ -38,7 +40,7 @@ contract ZeroDollarHomePageTest is Asserter {
         app.newRequest(43, "toto2", "http://google.com/image2.jpg");
         var (code, id,,) = app.getLastNonPublished();
         assertUintsEqual(id, 42, "Should have returned id 42");
-        app.closeRequest(42);
+        app.closeRequest();
         (code, id,,) = app.getLastNonPublished();
         assertUintsEqual(id, 43, "Should have returned id 43");
     }
