@@ -39,7 +39,7 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
     let imageUrl;
     let file;
     while ((file = yield parts)) {
-        imageUrl = yield saveFile(`${pullrequest.id}.mp4`, file);
+        imageUrl = yield saveFile(`${pullrequest.id}.jpg`, file);
     }
 
     const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login, imageUrl);

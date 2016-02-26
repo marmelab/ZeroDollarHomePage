@@ -87,7 +87,7 @@ class Claim extends Component {
                             <hr />
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <Dropzone onDrop={this.onDrop.bind(this)} style={styles.dropzone}>
+                                    <Dropzone onDrop={this.onDrop.bind(this)} style={styles.dropzone} multiple={false} accept="image/jpeg">
                                         {!this.state.image && <div>Drop an image here, or click to select the file to upload.</div>}
                                         {this.state.image && <img className="img-thubnail" style={styles.image} src={this.state.image.preview} />}
                                     </Dropzone>
