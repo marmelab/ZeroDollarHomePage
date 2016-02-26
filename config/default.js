@@ -67,7 +67,7 @@ module.exports = {
                 rateLimitOptions: {},
             },
             cron: {
-                enabled: false,
+                enabled: true,
                 schedule: '00 00 * * *', // every day at midnight
             },
         },
