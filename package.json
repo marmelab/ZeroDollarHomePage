@@ -116,9 +116,9 @@
     "redux-mock-store": "0.0.3",
     "selenium-standalone": "~4.9.0",
     "sinon": "2.0.0-pre",
+    "sol-unit": "~0.5.5",
     "solc": "~0.2.2-2",
     "solidity-loader": "~0.0.2",
-    "sol-unit": "~0.5.5",
     "tether": "~1.1.1",
     "webpack-dev-server": "~1.14.1"
   },
