@@ -23,6 +23,16 @@ export const githubApi = client => {
                 });
             });
         },
+
+        loadUser: () => {
+            return new Promise((resolve, reject) => {
+                client.me().info((err, response) => {
+                    if (err) return reject(err);
+
+                    resolve(response);
+                });
+            });
+        },
     };
 };
 

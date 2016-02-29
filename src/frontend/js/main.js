@@ -15,9 +15,13 @@ import configureStore from './app/configureStore';
 
 const store = configureStore(reducers, routes);
 
+const isOAuthRedirect = () => {
+    return window.location.toString().includes('oauthproxy');
+};
+
 FastClick.attach(document.body);
 
 render(
-    <Root {...{store}} />,
+    <Root {...{store}} isOAuthRedirect={isOAuthRedirect()} />,
     document.getElementById('root')
 );

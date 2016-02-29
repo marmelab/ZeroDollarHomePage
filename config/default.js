@@ -95,5 +95,10 @@ module.exports = {
             url: 'http://localhost:8545',
         },
     },
+    oauth: {
+        domain: frontendUrl,
+        githubClientId: '',
+        githubClientSecret: '',
+    },
     babel_ignore: /node_modules\/(?!admin-config|fakerest)/,
 };

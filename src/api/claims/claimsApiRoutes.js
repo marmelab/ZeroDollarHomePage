@@ -11,25 +11,29 @@ const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
 const newRequest = newRequestFactory(config.blockchain);
 
-let githubApi;
-
 app.use(methodFilter(['GET', 'POST']));
 
 app.use(function* (next) {
-    githubApi = githubApiFactory(config.apps.api);
 
     yield next;
 });
 
 app.use(koaRoute.get('/:repository/:pullRequestNumber', function* loadPullRequest(repository, pullRequestNumber) {
+    const githubApi = githubApiFactory(config.apps.api);
     this.body = yield githubApi.loadPullRequest(repository, pullRequestNumber);
 }));
 
-app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullRequest(repository, pullRequestNumber) {
+app.use(koaRoute.post('/:repository/:pullRequestNumber/:access_token', function* loadPullRequest(repository, pullRequestNumber, access_token) {
+    const githubApi = githubApiFactory(access_token);
+    const user = yield githubApi.loadUser();
     const pullrequest = yield githubApi.loadPullRequest(repository, pullRequestNumber);
 
     if (!pullrequest) {
         return this.throws(404);
+    }
+
+    if (!pullrequest.user.login !== user.login) {
+        return this.throws(401);
     }
 
     const parts = busboyParse(this, {

@@ -1,10 +1,15 @@
 import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
+import OAuthLoading from './OAuthLoading';
 import history from './history';
 import routesFactory from './routes';
 
-const Root = ({ store }) => {
+const Root = ({ store, isOAuthRedirect }) => {
+    if (isOAuthRedirect) {
+        return <OAuthLoading />;
+    }
+
     if (FRONTEND__APP__ENABLE_DEV_TOOLS) { // eslint-disable-line no-undef
         const DevTools = require('./DevTools');
 

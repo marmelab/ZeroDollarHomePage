@@ -1,19 +1,18 @@
 import { call, fork, put, take } from 'redux-saga/effects';
 import { routeActions } from 'react-router-redux';
-import { fetchSignIn as fetchSignInApi, fetchSignUp as fetchSignUpApi, storeLocalUser as storeLocalUserApi, removeLocalUser as removeLocalUserApi } from './userApi';
+import { signInWithGithub as signInWithGithubAPI, fetchSignIn as fetchSignInApi, fetchSignUp as fetchSignUpApi, storeLocalUser as storeLocalUserApi, removeLocalUser as removeLocalUserApi } from './userApi';
 import { userActionTypes, signIn as signInActions, signOut as signOutActions, signUp as signUpActions } from './userActions';
 
-export const signIn = function* signIn(fetchSignIn, storeLocalUser) {
+export const signIn = function* signIn(signInWithGithub) {
     while (true) {
-        const { payload: { email, password, previousRoute }} = yield take(userActionTypes.signIn.REQUEST);
-        const { error, user } = yield call(fetchSignIn, email, password);
+        const { payload } = yield take(userActionTypes.signIn.REQUEST);
+        const { error, user } = yield call(signInWithGithub);
+
         if (error) {
-            yield put(signInActions.failure(error));
-        } else {
-            yield call(storeLocalUser, user);
-            yield put(signInActions.success(user));
-            yield put(routeActions.push(previousRoute));
+            return yield put(signInActions.failure(error));
         }
+        yield put(signInActions.success(user));
+        yield put(routeActions.push(payload));
     }
 };
 
@@ -41,7 +40,7 @@ export const signOut = function* signOut(removeLocalUser) {
 };
 
 const sagas = function* sagas() {
-    yield fork(signIn, fetchSignInApi, storeLocalUserApi);
+    yield fork(signIn, signInWithGithubAPI);
     yield fork(signUp, fetchSignUpApi, storeLocalUserApi);
     yield fork(signOut, removeLocalUserApi);
 };

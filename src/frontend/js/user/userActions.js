@@ -8,10 +8,7 @@ export const userActionTypes = {
 };
 
 export const signIn = {
-    request: createAction(userActionTypes.signIn.REQUEST, (previousRoute, credentials) => ({
-        previousRoute,
-        ...credentials,
-    })),
+    request: createAction(userActionTypes.signIn.REQUEST),
     success: createAction(userActionTypes.signIn.SUCCESS),
     failure: createAction(userActionTypes.signIn.FAILURE),
 };

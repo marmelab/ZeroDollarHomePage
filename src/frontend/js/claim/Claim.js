@@ -6,6 +6,7 @@ import HelmetTitle from '../app/HelmetTitle';
 import claimActions from './claimActions';
 import Loading from '../app/Loading';
 import InvalidPullRequest from './InvalidPullRequest';
+import InvalidUser from './InvalidUser';
 import LoadingPullRequest from './LoadingPullRequest';
 import Dropzone from 'react-dropzone';
 
@@ -69,7 +70,7 @@ class Claim extends Component {
     }
 
     render() {
-        const { claimError, claiming, error, loading, pullRequest, pullRequestNumber, repository, timeBeforeDisplay } = this.props;
+        const { claimError, claiming, error, loading, pullRequest, pullRequestNumber, repository, timeBeforeDisplay, user } = this.props;
 
         return (
             <div className="container claim-page">
@@ -78,7 +79,10 @@ class Claim extends Component {
 
                 {loading && repository && pullRequestNumber && <LoadingPullRequest {...{ pullRequestNumber, repository }} />}
 
-                {!loading && pullRequest &&
+                {!loading && pullRequest && pullRequest.user.login !== user.login &&
+                    <InvalidUser login={user.login} />
+                }
+                {!loading && pullRequest && pullRequest.user.login === user.login &&
                     <div className="row">
                         <div className="col-xs-12">
                             <h2>Hi {pullRequest.user.login}!</h2>
@@ -135,6 +139,7 @@ function mapStateToProps(state) {
         pullRequestNumber: state.routing.location.query && state.routing.location.query.pr,
         repository: state.routing.location.query && state.routing.location.query.repository,
         timeBeforeDisplay: state.claim.timeBeforeDisplay,
+        user: state.user,
     };
 }
 

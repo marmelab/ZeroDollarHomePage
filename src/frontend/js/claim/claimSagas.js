@@ -8,7 +8,7 @@ export const loadPullRequest = loadItemFactory(claimActionTypes, claimActions);
 export const claimPullRequest = function* claimPullRequest(getState, fetchClaim) {
     while (true) {
         const { payload: { repository, pullRequestNumber, image } } = yield take(claimActionTypes.claim.REQUEST);
-        const { error, timeBeforeDisplay } = yield call(fetchClaim, repository, pullRequestNumber, image, getState().user.token);
+        const { error, timeBeforeDisplay } = yield call(fetchClaim, repository, pullRequestNumber, image, getState().user.access_token);
         if (error) {
             yield put(claimActions.claim.failure(error));
         } else {

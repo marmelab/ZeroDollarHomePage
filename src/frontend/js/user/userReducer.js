@@ -3,6 +3,7 @@ import { userActionTypes } from './userActions';
 export default function(localStorage) {
     const initialState = {
         id: localStorage.getItem('id'),
+        login: localStorage.getItem('login'),
         email: localStorage.getItem('email'),
         token: localStorage.getItem('token'),
         expires: localStorage.getItem('expires'),

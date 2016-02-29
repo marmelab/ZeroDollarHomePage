@@ -1,15 +1,11 @@
 /* globals API_URL */
 import { fetchEntityFactory } from '../app/entities/fetchEntities';
 
-export const fetchPullRequest = ({ repository, pullRequestNumber }, jwt) => {
+export const fetchPullRequest = ({ repository, pullRequestNumber }) => {
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json; charset=utf-8',
     };
-
-    if (jwt) {
-        headers['Authorization'] = jwt;
-    }
 
     return fetch(`${API_URL}/claims/${encodeURIComponent(repository)}/${encodeURIComponent(pullRequestNumber)}`, {
         // Allows API to set http-only cookies with AJAX calls
@@ -31,19 +27,15 @@ export const fetchPullRequest = ({ repository, pullRequestNumber }, jwt) => {
     }));
 };
 
-export const fetchClaim = (repository, pullRequestNumber, image, jwt) => {
+export const fetchClaim = (repository, pullRequestNumber, image, access_token) => {
     const headers = {
         'Accept': 'application/json',
     };
 
-    if (jwt) {
-        headers['Authorization'] = jwt;
-    }
-
     const body = new FormData();
     body.append('image', image);
 
-    return fetch(`${API_URL}/claims/${encodeURIComponent(repository)}/${encodeURIComponent(pullRequestNumber)}`, {
+    return fetch(`${API_URL}/claims/${encodeURIComponent(repository)}/${encodeURIComponent(pullRequestNumber)}/${encodeURIComponent(access_token)}`, {
         body,
         // Allows API to set http-only cookies with AJAX calls
         // @see http://www.redotheweb.com/2015/11/09/api-security.html

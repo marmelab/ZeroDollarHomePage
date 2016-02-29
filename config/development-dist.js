@@ -41,4 +41,7 @@ module.exports = {
             Console: { timestamp: true, colorize: true },
         },
     },
+    oauth: {
+        githubClientId: '',
+    },
 };
