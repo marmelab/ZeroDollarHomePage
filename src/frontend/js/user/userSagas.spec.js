@@ -15,6 +15,7 @@ describe('userSagas', () => {
         cookie: '',
     };
 
+    // We need to use require here instead of import because we're depending on hello.js which require a browser
     const userSagas = require('./userSagas');
     const signInSaga = userSagas.signIn;
 
