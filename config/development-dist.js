@@ -7,6 +7,7 @@ module.exports = {
                 password: undefined,
                 database: 'boilerplate',
             },
+            frontendUrl: 'http://localhost:8080/frontend',
             github: {
                 username: '',
                 password: '',

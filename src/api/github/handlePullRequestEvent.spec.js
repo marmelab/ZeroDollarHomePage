@@ -35,7 +35,7 @@ describe('github', () => {
 
         it('should handle closed pull requests and comment on it', () => {
             handlePullRequestEvent(undefined, undefined, {
-                action: 'close',
+                action: 'closed',
                 repository: { full_name: 'theshire/bagend' },
                 number: 42,
                 pull_request: {
@@ -47,7 +47,7 @@ describe('github', () => {
             expect(githubApi.commentOnPullRequest.firstCall.args[0]).to.equal('theshire/bagend');
             expect(githubApi.commentOnPullRequest.firstCall.args[1]).to.equal(42);
             expect(githubApi.commentOnPullRequest.firstCall.args[2]).to.contains('@frodo');
-            expect(githubApi.commentOnPullRequest.firstCall.args[2]).to.contains('http://theshire.com/claim?repository=theshire%2Fbagend&pr=42');
+            expect(githubApi.commentOnPullRequest.firstCall.args[2]).to.contains('http://theshire.com/#/claim?repository=theshire%2Fbagend&pr=42');
         });
     });
 });
