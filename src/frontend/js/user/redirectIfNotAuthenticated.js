@@ -5,7 +5,7 @@ export default (store) => {
         if (!authenticated) {
             replace({
                 pathname: '/sign-in',
-                state: { nextPathname: nextState.location.pathname },
+                state: { nextPath: nextState.location.pathname + (nextState.location.search ? nextState.location.search : '') },
             });
         }
     };

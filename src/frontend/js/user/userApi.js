@@ -1,4 +1,6 @@
-/* globals API_URL */
+/* globals API_URL, GITHUB_CLIENT_ID */
+import hellojs from 'hellojs';
+
 export function fetchSignIn(email, password) {
     return fetch(`${API_URL}/sign-in`, {
         method: 'POST',
@@ -56,6 +58,27 @@ export function fetchSignUp(email, password) {
         error,
     }));
 }
+
+export const signInWithGithub = () => new Promise((resolve) => {
+    hellojs.init({
+        github: GITHUB_CLIENT_ID,
+    }, {
+        oauth_proxy: `${API_URL}/oauthproxy`,
+    });
+
+    hellojs
+        .login('github')
+        .then(auth => {
+            hellojs(auth.network).api('/me').then(user => {
+                resolve({
+                    user: {
+                        access_token: auth.authResponse.access_token,
+                        ...user,
+                    },
+                });
+            });
+        }, err => resolve({ error: err.error }));
+});
 
 export const storeLocalUser = ({ id, email, token, expires }) => {
     localStorage.setItem('id', id);

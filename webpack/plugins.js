@@ -11,6 +11,7 @@ export default function(appName) {
             'API_URL': JSON.stringify(config.apps.frontend.api_url),
             'FRONTEND_HISTORY': JSON.stringify(config.apps.frontend.history),
             'FRONTEND__APP__ENABLE_DEV_TOOLS': JSON.stringify(config.apps.frontend.enableDevTools),
+            'GITHUB_CLIENT_ID': JSON.stringify(config.oauth.githubClientId),
         }),
         new ExtractTextPlugin(appName + '/[name].css', {
             allChunks: false,

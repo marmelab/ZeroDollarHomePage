@@ -1,5 +1,5 @@
 import App from './App';
-import claimRoutes from '../claim/claimRoutes';
+import claimRoutesFactory from '../claim/claimRoutes';
 import userRoutes from '../user/userRoutes';
 
 export default store => {
@@ -9,7 +9,7 @@ export default store => {
             path: '/',
             component: App,
             childRoutes: [
-                ...claimRoutes,
+                ...claimRoutesFactory(store),
                 ...userRoutes,
             ],
         }],
