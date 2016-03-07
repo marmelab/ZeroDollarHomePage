@@ -1,6 +1,6 @@
 import visionApi, { Image, Feature, Request} from 'node-cloud-vision-api';
 
-const isSafeForCategory = categoryRating => categoryRating === 'UNLIKELY' || categoryRating === 'VERY_UNLIKELY' || categoryRating === 'POSSIBLE';
+const isSafe = rating => ['UNLIKELY', 'VERY_UNLIKELY', 'POSSIBLE'].includes(rating);
 
 export default config => imageAsBuffer => {
     visionApi.init(config);
@@ -30,10 +30,10 @@ export default config => imageAsBuffer => {
             // safeSearchAnnotation format: https://cloud.google.com/vision/reference/rest/v1/images/annotate#SafeSearchAnnotation
             // possible values for adult, spoof, medical and violence: https://cloud.google.com/vision/reference/rest/v1/images/annotate#Likelihood
 
-            return isSafeForCategory(response.safeSearchAnnotation.adult) &&
-                isSafeForCategory(response.safeSearchAnnotation.spoof) &&
-                isSafeForCategory(response.safeSearchAnnotation.medical) &&
-                isSafeForCategory(response.safeSearchAnnotation.violence);
+            return isSafe(response.safeSearchAnnotation.adult) &&
+                isSafe(response.safeSearchAnnotation.spoof) &&
+                isSafe(response.safeSearchAnnotation.medical) &&
+                isSafe(response.safeSearchAnnotation.violence);
         }).catch(err => {
             console.error(err);
             return false;
