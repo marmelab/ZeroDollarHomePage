@@ -32,6 +32,11 @@ module.exports = {
                 apiKey: '',
                 secret: '',
                 bucket: '',
+                currentFileUrl: 'current.jpg',
+            },
+            vision: {
+                enabled: true,
+                auth: 'API_KEY',
             },
             logs: {
                 app: {Console: { timestamp: true, colorize: true, level: 'error' }},

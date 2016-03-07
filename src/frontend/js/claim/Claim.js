@@ -103,7 +103,7 @@ class Claim extends Component {
                                         <button onClick={this.onSubmit.bind(this)} className="btn btn-primary btn-lg" disabled={!this.state.image || claiming}>
                                             {claiming && <Loading />} Submit !
                                         </button>
-                                        {claimError && <span className="text-danger" style={styles.feedback}>An error occured while claiming your pull request</span>}
+                                        {claimError && <span className="text-danger" style={styles.feedback}>{claimError.error || claimError.message}</span>}
                                         {timeBeforeDisplay && <span className="text-success" style={styles.feedback}>Thanks ! You image should be displayed {timeBeforeDisplay.fromNow()} ({timeBeforeDisplay.format('LL')})</span>}
                                     </p>
                                 </div>

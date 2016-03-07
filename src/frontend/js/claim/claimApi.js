@@ -23,7 +23,7 @@ export const fetchPullRequest = ({ repository, pullRequestNumber }) => {
     .then(json => {
         return { item: json };
     }, error => ({
-        error,
+        error: JSON.parse(error.message),
     }));
 };
 
@@ -54,6 +54,6 @@ export const fetchClaim = (repository, pullRequestNumber, image, githubAccessTok
     .then(json => {
         return { timeBeforeDisplay: json.timeBeforeDisplay };
     }, error => ({
-        error,
+        error: JSON.parse(error.message),
     }));
 };
