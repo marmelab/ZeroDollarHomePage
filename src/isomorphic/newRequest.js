@@ -9,10 +9,11 @@ export const newRequest = (smartContractProxy, getReponseCodeMessage) => functio
         throw new Error(getReponseCodeMessage(result[0]));
     }
 
-    return true;
+    return result[1];
 };
 
 export default (config) => function* newRequestDefault(pullrequestId, authorName, imageUrl) {
     const smartContractProxy = initializeProxy(config);
-    return newRequest(smartContractProxy, getReponseCodeMessageFunc)(pullrequestId, authorName, imageUrl);
+    const request = newRequest(smartContractProxy, getReponseCodeMessageFunc);
+    return yield request(pullrequestId, authorName, imageUrl);
 };
