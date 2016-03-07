@@ -20,7 +20,7 @@ cache:
         - node_modules
 
 before_script:
-    - psql -c 'create database travis_ci_test;' -U postgres
+    - psql -c 'create database zerodollarhomepage_travis_ci_test;' -U postgres
     - cp -n ./config/test-dist.js ./config/test.js | true
     - "export NODE_ENV=test"
 
