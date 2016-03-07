@@ -12,7 +12,7 @@ module.exports = {
                 host: 'localhost',
                 user: 'postgres',
                 password: '',
-                database: 'travis_ci_test',
+                database: 'zerodollarhomepage_travis_ci_test',
             },
             github: {
                 username: '',
