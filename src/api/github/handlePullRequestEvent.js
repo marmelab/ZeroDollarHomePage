@@ -1,11 +1,11 @@
 import querystring from 'querystring';
 
 export default (githubApi, config) => (repo, ref, data) => {
-    if (data.action !== 'close' || !data.pull_request.merged) {
+    if (data.action !== 'closed' || !data.pull_request.merged) {
         return;
     }
 
-    const link = `${config.frontendUrl}/claim?${querystring.stringify({
+    const link = `${config.frontendUrl}/#/claim?${querystring.stringify({
         repository: data.repository.full_name,
         pr: data.number,
     })}`;

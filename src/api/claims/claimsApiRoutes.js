@@ -41,21 +41,15 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         if (part.length) {
             const [name, value] = part;
             if (name === 'githubAccessToken') {
-                if (!value) {
-                    return this.throw(401);
-                }
+                if (!value) return this.throw(401);
 
                 const githubApi = githubApiFactory(value);
                 const user = yield githubApi.loadUser();
                 pullrequest = yield githubApi.loadPullRequest(repository, pullRequestNumber);
 
-                if (!pullrequest) {
-                    return this.throw(404);
-                }
+                if (!pullrequest) return this.throw(404);
 
-                if (pullrequest.user.login !== user.login) {
-                    return this.throw(401);
-                }
+                if (pullrequest.user.login !== user.login) return this.throw(401);
             }
         } else {
             imageUrl = yield saveFile(`${pullrequest.id}.jpg`, part);
