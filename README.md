@@ -48,7 +48,7 @@ you configured the hooks
 You'll need to setup the Github hooks for the repositories you want to be
 watched by the application.
 - Go to your repository settings, **Webhooks & services**
-- Add a new webhook by entering `[API_URL]/github/callback` in the **Payload URL** field
+- Add a new webhook by entering `[API_URL]:3420/github/callback` in the **Payload URL** field (Port `3420` is important!)
 - Leave the **secret** field empty (verification is not implemented yet. PR are welcome !)
 - Select the **Just the push event.** option
 
