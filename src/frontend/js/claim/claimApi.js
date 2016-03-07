@@ -27,15 +27,16 @@ export const fetchPullRequest = ({ repository, pullRequestNumber }) => {
     }));
 };
 
-export const fetchClaim = (repository, pullRequestNumber, image, access_token) => {
+export const fetchClaim = (repository, pullRequestNumber, image, githubAccessToken) => {
     const headers = {
         'Accept': 'application/json',
     };
 
     const body = new FormData();
+    body.append('githubAccessToken', githubAccessToken);
     body.append('image', image);
 
-    return fetch(`${API_URL}/claims/${encodeURIComponent(repository)}/${encodeURIComponent(pullRequestNumber)}/${encodeURIComponent(access_token)}`, {
+    return fetch(`${API_URL}/claims/${encodeURIComponent(repository)}/${encodeURIComponent(pullRequestNumber)}`, {
         body,
         // Allows API to set http-only cookies with AJAX calls
         // @see http://www.redotheweb.com/2015/11/09/api-security.html

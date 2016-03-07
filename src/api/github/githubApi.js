@@ -36,4 +36,4 @@ export const githubApi = client => {
     };
 };
 
-export default (config) => githubApi(octonode.client(config.github));
+export default (config) => githubApi(octonode.client(config));

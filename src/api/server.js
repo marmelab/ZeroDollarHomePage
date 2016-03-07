@@ -158,7 +158,7 @@ app.use(koaMount('/admin', require('./admin')));
 initializeGithubHook(
     githubHook,
     config.apps.api,
-    handlePullRequestEventFactory(githubApiFactory(config.apps.api), config.apps.api)
+    handlePullRequestEventFactory(githubApiFactory(config.apps.api.github), config.apps.api)
 );
 
 if (!module.parent || module.parent.filename.indexOf('api/index.js') !== -1) {

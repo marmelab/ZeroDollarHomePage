@@ -2,6 +2,8 @@ import busboyParse from 'co-busboy';
 import config from 'config';
 import koa from 'koa';
 import koaRoute from 'koa-route';
+import path from 'path';
+
 import methodFilter from '../lib/middlewares/methodFilter';
 import githubApiFactory from '../github/githubApi';
 import saveFileFactory from '../lib/s3/uploadToS3';
@@ -13,37 +15,51 @@ const newRequest = newRequestFactory(config.blockchain);
 
 app.use(methodFilter(['GET', 'POST']));
 
-app.use(function* (next) {
-
-    yield next;
-});
-
 app.use(koaRoute.get('/:repository/:pullRequestNumber', function* loadPullRequest(repository, pullRequestNumber) {
-    const githubApi = githubApiFactory(config.apps.api);
+    const githubApi = githubApiFactory(config.apps.api.github);
     this.body = yield githubApi.loadPullRequest(repository, pullRequestNumber);
 }));
 
-app.use(koaRoute.post('/:repository/:pullRequestNumber/:access_token', function* loadPullRequest(repository, pullRequestNumber, access_token) {
-    const githubApi = githubApiFactory(access_token);
-    const user = yield githubApi.loadUser();
-    const pullrequest = yield githubApi.loadPullRequest(repository, pullRequestNumber);
-
-    if (!pullrequest) {
-        return this.throws(404);
-    }
-
-    if (!pullrequest.user.login !== user.login) {
-        return this.throws(401);
-    }
-
+app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullRequest(repository, pullRequestNumber) {
     const parts = busboyParse(this, {
-        autoFields: true,
+        checkField: (name, value) => {
+            if (name === 'githubAccessToken' && !value) {
+                return new Error(401);
+            }
+        },
+        checkFile: (fieldname, file, filename) => {
+            if (path.extname(filename) !== '.jpg') {
+                return new Error(400, 'Invalid jpg image');
+            }
+        },
     });
 
     let imageUrl;
-    let file;
-    while ((file = yield parts)) { // eslint-disable-line no-cond-assign
-        imageUrl = yield saveFile(`${pullrequest.id}.jpg`, file);
+    let pullrequest;
+    let part;
+    while ((part = yield parts)) { // eslint-disable-line no-cond-assign
+        if (part.length) {
+            const [name, value] = part;
+            if (name === 'githubAccessToken') {
+                if (!value) {
+                    return this.throw(401);
+                }
+
+                const githubApi = githubApiFactory(value);
+                const user = yield githubApi.loadUser();
+                pullrequest = yield githubApi.loadPullRequest(repository, pullRequestNumber);
+
+                if (!pullrequest) {
+                    return this.throw(404);
+                }
+
+                if (pullrequest.user.login !== user.login) {
+                    return this.throw(401);
+                }
+            }
+        } else {
+            imageUrl = yield saveFile(`${pullrequest.id}.jpg`, part);
+        }
     }
 
     const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login, imageUrl);
