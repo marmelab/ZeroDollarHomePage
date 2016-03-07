@@ -11,7 +11,7 @@ export const uploadToS3 = client => (filename, imageAsBuffer) => new Promise((re
         }
 
         if (response.statusCode !== 200) {
-            return reject(new Error('Error while uploading video'));
+            return reject(new Error('Error while uploading image'));
         }
 
         resolve(client.http(`/${filename}`));
