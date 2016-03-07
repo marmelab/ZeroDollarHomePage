@@ -1,27 +1,20 @@
 import knox from 'knox';
 
-export const uploadToS3 = client => (filename, stream) => new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on('data', chunk => chunks.push(chunk));
-    stream.on('error', err => reject(err));
-    stream.on('end', () => {
-        const finalBuffer = Buffer.concat(chunks);
+export const uploadToS3 = client => (filename, imageAsBuffer) => new Promise((resolve, reject) => {
+    client.putBuffer(imageAsBuffer, `/${filename}`, {
+        'Content-Length': imageAsBuffer.size,
+        'Content-Type': 'image/jpeg',
+        'x-amz-acl': 'public-read',
+    }, (err, response) => {
+        if (err) {
+            return reject(err);
+        }
 
-        client.putBuffer(finalBuffer, `/${filename}`, {
-            'Content-Length': finalBuffer.size,
-            'Content-Type': 'image/jpeg',
-            'x-amz-acl': 'public-read',
-        }, (err, response) => {
-            if (err) {
-                return reject(err);
-            }
+        if (response.statusCode !== 200) {
+            return reject(new Error('Error while uploading video'));
+        }
 
-            if (response.statusCode !== 200) {
-                return reject(new Error('Error while uploading video'));
-            }
-
-            resolve(client.http(`/${filename}`));
-        });
+        resolve(client.http(`/${filename}`));
     });
 });
 

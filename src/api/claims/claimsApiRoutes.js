@@ -5,13 +5,16 @@ import koaRoute from 'koa-route';
 import path from 'path';
 
 import methodFilter from '../lib/middlewares/methodFilter';
+import getBufferFromImageStream from '../lib/getBufferFromImageStream';
 import githubApiFactory from '../github/githubApi';
+import isSafeImageFactory from '../vision/isSafeImage';
 import saveFileFactory from '../lib/s3/uploadToS3';
 import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
 const newRequest = newRequestFactory(config.blockchain);
+const isSafeImage = isSafeImageFactory(config.apps.api.vision);
 
 app.use(methodFilter(['GET', 'POST']));
 
@@ -35,6 +38,7 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
     });
 
     let imageUrl;
+    let imageAsBuffer;
     let pullrequest;
     let part;
     while ((part = yield parts)) { // eslint-disable-line no-cond-assign
@@ -58,7 +62,15 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
                 }
             }
         } else {
-            imageUrl = yield saveFile(`${pullrequest.id}.jpg`, part);
+            imageAsBuffer = yield getBufferFromImageStream(part);
+
+            const isImageSafe = isSafeImage(imageAsBuffer);
+
+            if (!isImageSafe) {
+                this.throw(401, 'This image is not suitable.');
+            }
+
+            imageUrl = yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
         }
     }
 
