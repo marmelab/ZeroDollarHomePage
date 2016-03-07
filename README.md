@@ -14,6 +14,31 @@ Requirements:
 make install
 ```
 
+## Configuration
+
+You'll need to create a github application at https://github.com/settings/developers
+then copy/paste the **Client Id** and **Client Secret** into your configuration file
+(`development.js` or `production.js`):
+
+```js
+oauth: {
+    githubClientId: 'Your Client ID',
+    githubClientSecret: 'Your Client Secret',
+},
+```
+
+In the current version of the project, the application won't be able to access
+private repositories. PR are welcome !
+
+You'll also need to setup the github hooks for the repositories you want to be
+watched by the application.
+- Go to your repository settings, **Webhooks & services**
+- Add a new webhook by entering `[API_URL]/github/callback` in the **Payload URL** field
+- Leave the **secret** field empty (verification is not implemented yet. PR are welcome !)
+- Select the **Just the push event.** option
+
+That's it. Repeat for every repositories you want to bind.
+
 ## Develop
 
 ```sh
