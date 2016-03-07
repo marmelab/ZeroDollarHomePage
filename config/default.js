@@ -34,6 +34,7 @@ module.exports = {
                 bucket: '',
             },
             vision: {
+                enabled: true,
                 auth: 'API_KEY',
             },
             logs: {

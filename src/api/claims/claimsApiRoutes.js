@@ -64,7 +64,11 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         } else {
             imageAsBuffer = yield getBufferFromImageStream(part);
 
-            const isImageSafe = yield isSafeImage(imageAsBuffer);
+            let isImageSafe = !config.apps.api.vision.enabled;
+
+            if (config.apps.api.vision.enabled) {
+                isImageSafe = yield isSafeImage(imageAsBuffer);
+            }
 
             if (!isImageSafe) {
                 this.throw(401, 'This image is not suitable.');
