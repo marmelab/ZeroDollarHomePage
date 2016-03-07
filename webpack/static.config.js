@@ -1,14 +1,20 @@
-import loaders from './loaders';
 import plugins from './plugins';
 import resolve from './resolve';
 
 module.exports = {
     entry: {
+        index: [
+            __dirname + '/../src/static/index.html',
+        ],
     },
     module: {
-        loaders: loaders('static'),
+        loaders: [{
+            test: /\.html$/,
+            loader: 'html',
+        }],
     },
     output: {
+        filename: 'static/[name].html',
         path: __dirname + '/../build',
         publicPath: '/',
     },

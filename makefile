@@ -22,7 +22,10 @@ install: copy-conf
 	@./node_modules/.bin/selenium-standalone install --version=2.50.1
 
 # Deployment ===================================================================
-build:
+clear-build:
+	@rm -rf ./build/*
+
+build: clear-build
 	@./node_modules/.bin/webpack --progress
 
 build-ethereum:
@@ -106,7 +109,7 @@ log-api-dev:
 	@node_modules/.bin/pm2 logs zdh_api-dev
 
 # Tests ========================================================================
-build-test:
+build-test: clear-build
 	@NODE_ENV=test ./node_modules/.bin/webpack --progress
 
 
