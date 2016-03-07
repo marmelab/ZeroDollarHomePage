@@ -32,6 +32,7 @@ module.exports = {
                 apiKey: '',
                 secret: '',
                 bucket: '',
+                currentFileUrl: 'current.jpg',
             },
             vision: {
                 enabled: true,

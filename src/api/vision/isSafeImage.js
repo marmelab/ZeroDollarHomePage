@@ -1,6 +1,6 @@
 import visionApi, { Image, Feature, Request} from 'node-cloud-vision-api';
 
-const isSafe = rating => ['UNLIKELY', 'VERY_UNLIKELY', 'POSSIBLE'].includes(rating);
+const isSafe = rating => ['POSSIBLE', 'UNLIKELY', 'VERY_UNLIKELY'].indexOf(rating) > -1;
 
 export default config => imageAsBuffer => {
     visionApi.init(config);
