@@ -1,4 +1,4 @@
-export const uploadToS3 = stream => new Promise((resolve, reject) => {
+export default (stream) => new Promise((resolve, reject) => {
     const chunks = [];
     stream.on('data', chunk => chunks.push(chunk));
     stream.on('error', err => reject(err));

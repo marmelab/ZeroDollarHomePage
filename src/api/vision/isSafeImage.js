@@ -1,6 +1,6 @@
-import visionApi, { annotate, Image, Request, Feature } from 'node-cloud-vision-api';
+import visionApi, { Image, Feature, Request} from 'node-cloud-vision-api';
 
-const isSafeForCategory = categoryRating => categoryRating === 'UNLIKELY' || categoryRating === 'VERY_UNLIKELY';
+const isSafeForCategory = categoryRating => categoryRating === 'UNLIKELY' || categoryRating === 'VERY_UNLIKELY' || categoryRating === 'POSSIBLE';
 
 export default config => imageAsBuffer => {
     visionApi.init(config);
@@ -14,14 +14,14 @@ export default config => imageAsBuffer => {
         ],
     });
 
-    return annotate(request)
-        .then(res => {
-            if (!res.responses || res.responses.length === 0) {
+    return visionApi.annotate(request)
+        .then(({ responses }) => {
+            if (!responses || responses.length === 0) {
                 return false;
             }
 
             // We requested only one feature so we should have only one response
-            const response = res.responses[0];
+            const response = responses[0];
 
             if (!response.safeSearchAnnotation) {
                 return false;

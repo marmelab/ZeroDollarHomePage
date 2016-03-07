@@ -33,6 +33,9 @@ module.exports = {
                 secret: '',
                 bucket: '',
             },
+            vision: {
+                auth: 'API_KEY',
+            },
             logs: {
                 app: {Console: { timestamp: true, colorize: true, level: 'error' }},
                 http: {},

@@ -37,14 +37,14 @@ describe('Vision API', () => {
             expect(result).to.equal(false);
         });
 
-        it('should return false if safeSearchAnnotation.adult is neither UNLIKELY or VERY_UNLIKELY', function* () {
+        it('should return false if safeSearchAnnotation.adult is neither UNLIKELY, VERY_UNLIKELY or POSSIBLE', function* () {
             sinon.stub(visionApi, 'annotate', () => Promise.resolve({
                 responses: [{
                     safeSearchAnnotation: {
                         adult: 'LIKELEY',
                         spoof: 'UNLIKELY',
-                        medical: 'UNLIKELY',
-                        violence: 'UNLIKELY',
+                        medical: 'POSSIBLE',
+                        violence: 'VERY_UNLIKELY',
                     },
                 }],
             }));
@@ -53,14 +53,14 @@ describe('Vision API', () => {
             expect(result).to.equal(false);
         });
 
-        it('should return false if safeSearchAnnotation.spoof is neither UNLIKELY or VERY_UNLIKELY', function* () {
+        it('should return false if safeSearchAnnotation.spoof is neither UNLIKELY, VERY_UNLIKELY or POSSIBLE', function* () {
             sinon.stub(visionApi, 'annotate', () => Promise.resolve({
                 responses: [{
                     safeSearchAnnotation: {
                         adult: 'UNLIKELY',
                         spoof: 'LIKELEY',
-                        medical: 'UNLIKELY',
-                        violence: 'UNLIKELY',
+                        medical: 'POSSIBLE',
+                        violence: 'VERY_UNLIKELY',
                     },
                 }],
             }));
@@ -69,12 +69,12 @@ describe('Vision API', () => {
             expect(result).to.equal(false);
         });
 
-        it('should return false if safeSearchAnnotation.medical is neither UNLIKELY or VERY_UNLIKELY', function* () {
+        it('should return false if safeSearchAnnotation.medical is neither UNLIKELY, VERY_UNLIKELY or POSSIBLE', function* () {
             sinon.stub(visionApi, 'annotate', () => Promise.resolve({
                 responses: [{
                     safeSearchAnnotation: {
-                        adult: 'UNLIKELY',
-                        spoof: 'UNLIKELY',
+                        adult: 'POSSIBLE',
+                        spoof: 'VERY_UNLIKELY',
                         medical: 'LIKELEY',
                         violence: 'UNLIKELY',
                     },
@@ -85,13 +85,13 @@ describe('Vision API', () => {
             expect(result).to.equal(false);
         });
 
-        it('should return false if safeSearchAnnotation.violence is neither UNLIKELY or VERY_UNLIKELY', function* () {
+        it('should return false if safeSearchAnnotation.violence is neither UNLIKELY, VERY_UNLIKELY or POSSIBLE', function* () {
             sinon.stub(visionApi, 'annotate', () => Promise.resolve({
                 responses: [{
                     safeSearchAnnotation: {
                         adult: 'UNLIKELY',
-                        spoof: 'UNLIKELY',
-                        medical: 'UNLIKELY',
+                        spoof: 'VERY_UNLIKELY',
+                        medical: 'POSSIBLE',
                         violence: 'LIKELEY',
                     },
                 }],
@@ -101,12 +101,12 @@ describe('Vision API', () => {
             expect(result).to.equal(false);
         });
 
-        it('should return true if all safeSearchAnnotation categories are either UNLIKELY or VERY_UNLIKELY', function* () {
+        it('should return true if all safeSearchAnnotation categories are either UNLIKELY, VERY_UNLIKELY or POSSIBLE', function* () {
             sinon.stub(visionApi, 'annotate', () => Promise.resolve({
                 responses: [{
                     safeSearchAnnotation: {
                         adult: 'UNLIKELY',
-                        spoof: 'UNLIKELY',
+                        spoof: 'POSSIBLE',
                         medical: 'VERY_UNLIKELY',
                         violence: 'VERY_UNLIKELY',
                     },
