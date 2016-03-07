@@ -1,10 +1,8 @@
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-const sassOptions = [
-    'includePaths[]=./node_modules/compass-mixins/lib/',
-].join(`\n`);
+const sassOptions = 'includePaths[]=./node_modules/compass-mixins/lib/';
 
-export default function() {
+export default function(appName) {
     const loaders = [{
         test: /\.jsx?$/,
         exclude: /node_modules/,
@@ -26,7 +24,7 @@ export default function() {
         loader: 'json-loader',
     }, {
         test: /\.jpe?g$|\.gif$|\.png$/,
-        loader: 'url-loader?limit=10000&name=/${appName}/[hash].[ext]',
+        loader: `url-loader?limit=10000&name=/${appName}/[hash].[ext]`,
     }, {
         test: /\.(otf|svg)(\?.+)?$/,
         loader: 'url-loader?limit=8192',
@@ -45,12 +43,10 @@ export default function() {
     }, {
         test: /\.html$/,
         loader: 'html',
-    }];
-
-    loaders.push({
+    }, {
         loader: ExtractTextPlugin.extract('css!sass?' + sassOptions),
         test: /\.s?css$/,
-    });
+    }];
 
     return loaders;
-};
+}

@@ -19,10 +19,13 @@ install: copy-conf
 	@echo "Installing Node dependencies"
 	@npm install
 	@echo "Installing Selenium server"
-	@./node_modules/.bin/selenium-standalone install --version=2.50.1
+	@./node_modules/.bin/selenium-standalone install --version=2.50.1 --drivers.chrome.version=2.21
 
 # Deployment ===================================================================
-build:
+clear-build:
+	@rm -rf ./build/*
+
+build: clear-build
 	@./node_modules/.bin/webpack --progress
 
 build-ethereum:
@@ -106,7 +109,7 @@ log-api-dev:
 	@node_modules/.bin/pm2 logs zdh_api-dev
 
 # Tests ========================================================================
-build-test:
+build-test: clear-build
 	@NODE_ENV=test ./node_modules/.bin/webpack --progress
 
 
@@ -146,8 +149,7 @@ test:
 	# TODO: restore when implemented
 	# make test-isomorphic-unit
 	make test-api-functional
-	# TODO: restore when implemented
-	# make test-frontend-functional
+	make test-frontend-functional
 
 reset-test-database:
 	@NODE_ENV=test ./node_modules/.bin/db-migrate \
