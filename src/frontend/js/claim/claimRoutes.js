@@ -5,7 +5,7 @@ export default store => {
     const redirectIfNotAuthenticated = redirectIfNotAuthenticatedFactory(store);
 
     return [{
-        path: '/claim',
+        path: 'claim',
         component: Claim,
         onEnter: redirectIfNotAuthenticated,
     }];

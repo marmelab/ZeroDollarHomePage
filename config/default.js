@@ -11,7 +11,7 @@ module.exports = {
         },
         api: {
             allowOrigin: [frontendUrl],
-            frontendUrl: `${frontendUrl}/frontend`,
+            frontendUrl: frontendUrl,
             db: {
                 driver: 'pg',
                 host: 'DB_HOST',
