@@ -16,7 +16,9 @@ make install
 
 ## Configuration
 
-You'll need to create a github application at https://github.com/settings/developers
+### Github oAuth
+
+You'll need to create a Github application at https://github.com/settings/developers
 then copy/paste the **Client Id** and **Client Secret** into your configuration file
 (`development.js` or `production.js`):
 
@@ -27,10 +29,23 @@ oauth: {
 },
 ```
 
-In the current version of the project, the application won't be able to access
-private repositories. PR are welcome !
+### Github API
 
-You'll also need to setup the github hooks for the repositories you want to be
+For the application to have access to the Github API, you'll need to provide a
+way to authenticate with Github in the configuration file (`development.js` or
+`production.js`).
+
+This can be:
+
+- A `login`/`password` to an account which can access the repositories on which
+you configured the hooks
+- An access token (Follow the [instructions](https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
+to create one) created from an account with access to the repositories on which
+you configured the hooks
+
+### Github hooks
+
+You'll need to setup the Github hooks for the repositories you want to be
 watched by the application.
 - Go to your repository settings, **Webhooks & services**
 - Add a new webhook by entering `[API_URL]/github/callback` in the **Payload URL** field
