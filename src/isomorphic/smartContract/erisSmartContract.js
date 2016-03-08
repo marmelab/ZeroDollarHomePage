@@ -21,7 +21,7 @@ export function getContractFromName(name, {url, account}, ethDirectory = './src/
         fs.accessSync(`${ethDirectory}/epm.json`, fs.F_OK);
     } catch (err) {
         throw new Error(`Unable to fetch eris package manager result (epm.json).
-                         Have you compile your contracts ?`);
+                         Have you compiled your contracts ?`);
     }
 
     const contractData = JSON.parse(fs.readFileSync(`${ethDirectory}/epm.json`));
