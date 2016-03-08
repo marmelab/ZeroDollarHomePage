@@ -194,13 +194,17 @@ eris-start-keys-services:
 	@eris version  # Check if eris is installed
 	eris services start keys && sleep 3
 
+flush-eris:
+	docker ps -a | grep eris | awk '{ print $1 }' | xargs docker rm -f || true
+	rm -rf ./src/ethereum/abi
+	rm -f ./src/ethereum/epm.json ./src/ethereum/*.abi
+
 new-blockchain-config: eris-start-keys-services
 	eris chains make --account-types=Full:1 zerodollar
 	rm -rf ./.eris && mkdir -p ./.eris
 	cat ${HOME}/.eris/chains/zerodollar/addresses.csv | cut -d ',' -f 1 > ./.eris/addr.txt
 
-init-blockchain: new-blockchain-config
-	eris chains stop -rxf zerodollar
+init-blockchain: flush-eris new-blockchain-config
 	eris keys export $(shell cat ./.eris/addr.txt)
 	eris keys convert $(shell cat ./.eris/addr.txt) > ./.eris/account.json
 	eris chains new zerodollar --dir ${HOME}/.eris/chains/zerodollar
@@ -224,8 +228,3 @@ delete-blockchain: stop-blockchain
 
 deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
-
-flush-eris:
-	docker rm -f $(shell docker ps -aq)
-	rm -rf ${HOME}/.eris ./src/ethereum/abi
-	rm -f ./src/ethereum/epm.json ./src/ethereum/*.abi
