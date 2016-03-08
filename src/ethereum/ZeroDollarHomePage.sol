@@ -7,7 +7,8 @@ contract ZeroDollarHomePage {
         InvalidAuthorName,
         InvalidImageUrl,
         RequestNotFound,
-        EmptyQueue
+        EmptyQueue,
+        PullRequestAlreadyClaimed
     }
 
     struct Request {
@@ -45,6 +46,11 @@ contract ZeroDollarHomePage {
     function newRequest(uint pullRequestId, string authorName, string imageUrl) returns (uint8 code, uint displayDate) {
         if (pullRequestId <= 0) {
             code = uint8(ResponseCodes.InvalidPullRequestId);
+            return;
+        }
+
+        if (_requests[pullRequestId].id == pullRequestId) {
+            code = uint8(ResponseCodes.PullRequestAlreadyClaimed);
             return;
         }
 
