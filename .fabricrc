@@ -13,4 +13,4 @@ supervisord_dest=zerodollar.conf
 environment=production
 
 # S3 static server
-s3_bucket=zerodollarhomepage
+s3_bucket=zerodollarhomepage.marmelab.com
