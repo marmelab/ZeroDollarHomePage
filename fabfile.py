@@ -47,6 +47,7 @@ def deploy_api(branch='master'):
 
     sudo('service supervisor restart')
     sudo('supervisorctl start %s' % env.api_name)
+    sudo('supervisorctl start geth')
 
 @task
 def deploy_static(branch='master'):
