@@ -1,5 +1,6 @@
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import loaders from './loaders';
-import plugins from './plugins';
+import { definePlugin, extractTextPlugin } from './plugins';
 
 module.exports = {
     entry: {
@@ -20,7 +21,21 @@ module.exports = {
         path: __dirname + '/../build',
         publicPath: '/',
     },
-    plugins: plugins('admin'),
+    plugins: [
+        definePlugin(),
+        extractTextPlugin('admin'),
+        new HtmlWebpackPlugin({
+            filename: 'admin/index.html',
+            template: __dirname + '/../src/admin/index.html',
+            chunks: ['index'],
+            hash: true,
+        }), new HtmlWebpackPlugin({
+            filename: 'admin/login.html',
+            template: __dirname + '/../src/admin/login.html',
+            chunks: ['login'],
+            hash: true,
+        }),
+    ],
     devServer: {
         historyApiFallback: true,
     },

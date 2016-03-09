@@ -6,7 +6,7 @@ env.use_ssh_config = True
 env.forward_agent = True
 env.output_prefix = False
 
-gitUrl = 'https://github.com/marmelab/javascript-boilerplate.git'
+gitUrl = 'https://github.com/marmelab/ZeroDollarHomePage.git'
 
 @task
 def setup_api():
@@ -18,6 +18,7 @@ def setup_api():
     sudo('apt --yes install nodejs')
     sudo('apt --yes install supervisor')
     sudo('apt --yes install git htop vim')
+    run('bash <(curl -L https://install-geth.ethereum.org)')
     run('npm set progress=false')
 
     run('git clone %s %s/%s' % (gitUrl, env.home, env.api_pwd))
@@ -28,6 +29,7 @@ def check():
     run('node --version')
     run('service supervisor status')
     run('supervisord --version')
+    run('geth --help')
 
 @task
 def deploy_api(branch='master'):
@@ -39,17 +41,17 @@ def deploy_api(branch='master'):
         # Install dependencies
         run('make install-prod')
         # DB migrations
-        run('NODE_ENV=%s make migration' % env.environment)
+        run('NODE_ENV=%s make migrate' % env.environment)
         # Update supervisor configuration
         put(env.supervisord_source, '/etc/supervisor/conf.d/%s' % env.supervisord_dest, use_sudo=True)
 
-    sudo('supervisorctl restart %s' % env.api_name)
+    sudo('service supervisor restart')
+    sudo('supervisorctl start %s' % env.api_name)
 
 @task
 def deploy_static(branch='master'):
     local('git fetch')
     local('git checkout %s' % branch)
     local('git pull')
-    local('rm -rf build/*')
     local('NODE_ENV=%s make build' % env.environment)
-    local('aws --region=eu-west-1 s3 sync ./build/ s3://%s/' % env.s3_bucket)
+    local('aws --region=eu-west-1 s3 sync ./build/frontend/ s3://%s/' % env.s3_bucket)

@@ -43,31 +43,20 @@ install-aws:
 
 install-prod:
 	@echo "Installing Node dependencies"
-	@npm install
+	@npm install -p
 	@echo "Copy production conf"
 	@cp -n ./config/production-dist.js ./config/production.js | true
-
-setup-staging:
-	fab --config=.fabricrc-staging setup_api check
 
 setup-prod:
 	fab --config=.fabricrc setup_api check
 
-deploy-staging-api:
-	fab --config=.fabricrc-staging deploy_api
-
-deploy-staging-frontend:
-	fab --config=.fabricrc-staging deploy_static
-
-deploy-staging: deploy-staging-api deploy-staging-frontend
-
-deploy-prod-api:
+deploy-api:
 	fab --config=.fabricrc deploy_api
 
-deploy-prod-frontend:
+deploy-frontend:
 	fab --config=.fabricrc deploy_static
 
-deploy-prod: deploy-prod-api deploy-prod-frontend
+deploy: deploy-prod-api deploy-prod-frontend
 
 # Development ==================================================================
 run-dev:

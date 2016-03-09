@@ -1,16 +1,16 @@
 # Remote server infos
-hosts=newapp-api.marmelab.com
+hosts=54.229.25.115
 user=ubuntu
 home=/home/ubuntu
-api_name=newapp
-api_pwd=newapp
+api_name=zerodollar
+api_pwd=ZeroDollarHomePage
 
 # Supervisor configuration
-supervisord_source=config/supervisor/newapp.conf
-supervisord_dest=newapp.conf
+supervisord_source=config/supervisor/zerodollar.conf
+supervisord_dest=zerodollar.conf
 
 # NODE_ENV
 environment=production
 
 # S3 static server
-s3_bucket=newapp
+s3_bucket=zerodollarhomepage.marmelab.com

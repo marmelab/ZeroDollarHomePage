@@ -1,5 +1,6 @@
-import plugins from './plugins';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import resolve from './resolve';
+import { definePlugin, extractTextPlugin } from './plugins';
 
 module.exports = {
     entry: {
@@ -18,7 +19,15 @@ module.exports = {
         path: __dirname + '/../build',
         publicPath: '/',
     },
-    plugins: plugins('static'),
+    plugins: [
+        definePlugin(),
+        extractTextPlugin('static'),
+        new HtmlWebpackPlugin({
+            filename: 'static/index.html',
+            template: __dirname + '/../src/static/index.html',
+            hash: true,
+        }),
+    ],
     resolve: resolve('static'),
     devServer: {
         historyApiFallback: true,
