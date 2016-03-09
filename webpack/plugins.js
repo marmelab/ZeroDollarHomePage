@@ -1,6 +1,5 @@
 import config from 'config'; // eslint-disable-line no-var
 import ExtractTextPlugin from 'extract-text-webpack-plugin'; // eslint-disable-line no-var
-import HtmlWebpackPlugin from 'html-webpack-plugin'; // eslint-disable-line no-var
 import webpack from 'webpack'; // eslint-disable-line no-var
 
 export function definePlugin() {
@@ -14,25 +13,8 @@ export function definePlugin() {
     });
 }
 
-export default function(appName) {
-    return [
-        definePlugin(),
-        new ExtractTextPlugin(appName + '/[name].css', {
-            allChunks: false,
-        }),
-    ].concat(appName === 'admin' ? [new HtmlWebpackPlugin({
-        filename: appName + '/' + 'index.html',
-        template: __dirname + '/../src/' + appName + '/index.html',
-        chunks: ['index'],
-        hash: true,
-    }), new HtmlWebpackPlugin({
-        filename: appName + '/' + 'login.html',
-        template: __dirname + '/../src/' + appName + '/login.html',
-        chunks: ['login'],
-        hash: true,
-    })] : [new HtmlWebpackPlugin({
-        filename: appName + '/' + 'index.html',
-        template: __dirname + '/../src/' + appName + '/index.html',
-        hash: true,
-    })]);
+export function extractTextPlugin(appName) {
+    return new ExtractTextPlugin(appName + '/[name].css', {
+        allChunks: false,
+    });
 }
