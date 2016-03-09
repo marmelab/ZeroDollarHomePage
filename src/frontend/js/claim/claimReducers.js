@@ -38,6 +38,7 @@ export default (state = initialState, { type, payload }) => {
         return {
             ...state,
             claiming: true,
+            timeBeforeDisplay: null,
         };
 
     case claimActionTypes.claim.SUCCESS:
@@ -52,6 +53,7 @@ export default (state = initialState, { type, payload }) => {
         return {
             ...state,
             claimError: payload,
+            timeBeforeDisplay: null,
             claiming: false,
         };
 

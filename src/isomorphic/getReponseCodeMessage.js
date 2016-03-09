@@ -5,6 +5,7 @@ const messagesForCodes = {
     3: 'Invalid image url', // InvalidImageUrl,
     4: 'Request not found', // RequestNotFound,
     5: 'Empty queue', // EmptyQueue
+    6: 'Pull request already claimed', // PullRequestAlreadyClaimed
 };
 
 export default (code) => messagesForCodes[code];

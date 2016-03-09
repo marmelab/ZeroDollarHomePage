@@ -9,6 +9,14 @@ contract ZeroDollarHomePageTest is Asserter {
         assertUintsEqual(code, uint8(ZeroDollarHomePage.ResponseCodes.Ok), "Should have returned Ok");
     }
 
+    function test_newRequest_should_not_allow_multiple_claim_on_same_pullrequet() {
+        ZeroDollarHomePage app = new ZeroDollarHomePage();
+        app.newRequest(42, "toto", "http://google.com/image.jpg");
+        var (code,) = app.newRequest(42, "toto", "http://google.com/image.jpg");
+
+        assertUintsEqual(code, uint8(ZeroDollarHomePage.ResponseCodes.PullRequestAlreadyClaimed), "Should have returned PullRequestAlreadyClaimed");
+    }
+
     function test_newRequest_should_returns_correct_date() {
         ZeroDollarHomePage app = new ZeroDollarHomePage();
         var (code, publicationDate) = app.newRequest(42, "toto", "http://google.com/image.jpg");
