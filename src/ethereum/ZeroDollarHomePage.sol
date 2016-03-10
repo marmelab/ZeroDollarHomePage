@@ -5,7 +5,6 @@ contract ZeroDollarHomePage {
         Ok,
         InvalidPullRequestId,
         InvalidAuthorName,
-        InvalidImageUrl,
         RequestNotFound,
         EmptyQueue,
         PullRequestAlreadyClaimed
@@ -14,7 +13,6 @@ contract ZeroDollarHomePage {
     struct Request {
         uint id;
         string authorName;
-        string imageUrl;
         uint createdAt; // timestamp for pull request creation
         uint displayedAt; // timestamp for image display
     }
@@ -43,7 +41,7 @@ contract ZeroDollarHomePage {
     /*
      * Register a new pull request merged on github
      */
-    function newRequest(uint pullRequestId, string authorName, string imageUrl) returns (uint8 code, uint displayDate) {
+    function newRequest(uint pullRequestId, string authorName) returns (uint8 code, uint displayDate) {
         if (pullRequestId <= 0) {
             code = uint8(ResponseCodes.InvalidPullRequestId);
             return;
@@ -59,15 +57,9 @@ contract ZeroDollarHomePage {
             return;
         }
 
-        if (bytes(imageUrl).length <= 0) {
-            code = uint8(ResponseCodes.InvalidImageUrl);
-            return;
-        }
-
         numberOfRequests += 1;
         _requests[pullRequestId].id = pullRequestId;
         _requests[pullRequestId].authorName = authorName;
-        _requests[pullRequestId].imageUrl = imageUrl;
         _requests[pullRequestId].createdAt = now;
 
         _queue.push(pullRequestId);
@@ -95,7 +87,7 @@ contract ZeroDollarHomePage {
     /*
      * Get the next image to be displayed on the ZeroDollarHomePage site
      */
-    function getLastNonPublished() returns (uint8 code, uint id, string authorName, string imageUrl, uint createdAt) {
+    function getLastNonPublished() returns (uint8 code, uint id, string authorName, uint createdAt) {
         if (queueLength == 0) {
             code = uint8(ResponseCodes.EmptyQueue);
             return;
@@ -104,7 +96,6 @@ contract ZeroDollarHomePage {
         var request = _requests[_queue[_current]];
         id = request.id;
         authorName = request.authorName;
-        imageUrl = request.imageUrl;
         createdAt = request.createdAt;
         code = uint8(ResponseCodes.Ok);
     }

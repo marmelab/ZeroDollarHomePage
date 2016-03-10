@@ -67,12 +67,14 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
             if (!isImageSafe) {
                 this.throw(401, 'This image is not suitable.');
             }
-
-            imageUrl = yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
         }
     }
 
-    const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login, imageUrl);
+    const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login);
+
+    if (timeBeforeDisplay <= 0) this.throw(500, 'An error occured while claiming this pull request');
+
+    imageUrl = yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
 
     this.body = { timeBeforeDisplay };
 }));

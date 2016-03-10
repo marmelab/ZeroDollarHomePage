@@ -15,14 +15,10 @@ describe('getReponseCodeMessage', () => {
     });
 
     it('should returns the correct message for code 3', () => {
-        expect(getReponseCodeMessage(3)).to.equal('Invalid image url');
+        expect(getReponseCodeMessage(3)).to.equal('Request not found');
     });
 
     it('should returns the correct message for code 4', () => {
-        expect(getReponseCodeMessage(4)).to.equal('Request not found');
-    });
-
-    it('should returns the correct message for code 5', () => {
-        expect(getReponseCodeMessage(5)).to.equal('Empty queue');
+        expect(getReponseCodeMessage(4)).to.equal('Empty queue');
     });
 });

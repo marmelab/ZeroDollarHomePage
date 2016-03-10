@@ -11,7 +11,7 @@ export function* updateImageJob(closeRequest, getLastNonPublished, updateCurrent
     const result = yield getLastNonPublished();
     if (!result) return;
 
-    yield updateCurrentFile(result.imageUrl);
+    yield updateCurrentFile(`${result.id}.jpg`);
 }
 
 export default () => {
