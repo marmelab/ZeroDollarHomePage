@@ -217,3 +217,6 @@ delete-blockchain: stop-blockchain
 
 deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
+
+deploy-contracts-ethereum:
+	@./node_modules/.bin/babel-node ./bin/deployEthereumContracts.js
