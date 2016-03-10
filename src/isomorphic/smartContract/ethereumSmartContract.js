@@ -17,10 +17,21 @@ export const compileContract = (client, name) => {
     return client.eth.compile.solidity(rawContract)[name];
 };
 
+export const getContractAddress = () => {
+    const addressPath = path.resolve(__dirname, '../../../.eris/contractAddress.txt');
+    try {
+        return fs.readFileSync(addressPath, 'utf8');
+    } catch (err) {
+        throw new Error(`Unable to fetch contract address (${addressPath}).
+                         Have you deployed your contracts ?`);
+    }
+};
+
 export default function ethereumSmartContract(name, client = buildClient(), compile = compileContract) {
     const compiledContract = compile(client, name);
     const contract = client.eth.contract(compiledContract.info.abiDefinition);
-    const instance = contract.at(client.eth.coinbase);
+    const address = getContractAddress();
+    const instance = contract.at(address);
 
     instance.abi
         .filter(field => field.name)
