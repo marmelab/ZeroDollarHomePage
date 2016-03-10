@@ -27,6 +27,29 @@ export const getContractAddress = () => {
     }
 };
 
+export const getReceipt = (client, transactionHash) => new Promise((resolve, reject) => {
+    let checkId = null;
+
+    // Throw timeout after 60s
+    const cancelId = setTimeout(() => {
+        if (checkId !== null) clearTimeout(checkId);
+        reject(new Error('Timeout'));
+    }, 60 * 1000);
+
+    function checkTransaction() {
+        const receipt = client.eth.getTransactionReceipt(transactionHash);
+
+        if (receipt !== null) {
+            clearTimeout(cancelId);
+            return resolve(receipt);
+        }
+
+        checkId = setTimeout(checkTransaction, 1000);
+    }
+
+    checkTransaction();
+});
+
 export default function ethereumSmartContract(name, client = buildClient(), compile = compileContract) {
     const compiledContract = compile(client, name);
     const contract = client.eth.contract(compiledContract.info.abiDefinition);
@@ -39,11 +62,25 @@ export default function ethereumSmartContract(name, client = buildClient(), comp
             if (field.type === 'function') {
                 const replacedAttribute = instance[field.name];
                 instance[field.name] = (...args) => new Promise((resolve, reject) => {
-                    replacedAttribute.call(...args, (err, value) => {
-                        if (err) return reject(err);
-                        if (Array.isArray(value)) return resolve(value.filter(v => !!v).map(cleanContractValue));
-                        return resolve(cleanContractValue(value));
-                    });
+                    const truc = replacedAttribute.sendTransaction(
+                        ...args,
+                        {from: client.eth.coinbase, to: instance.address},
+                        (err, hash) => {
+                            if (err) return reject(err);
+
+                            // @TODO STILL IN WIP
+                            // console.log('hash', hash);
+                            getReceipt(client, hash)
+                                .then(value => {
+                                    console.log('value', value);
+                                    resolve(1);
+                                })
+                                .catch(error => reject(error));
+                            // if (Array.isArray(value)) return resolve(value.filter(v => !!v).map(cleanContractValue));
+                            // return resolve(cleanContractValue(value));
+                        }
+                    );
+                    console.log('truc?', truc);
                 });
             }
         });
