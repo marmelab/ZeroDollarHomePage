@@ -1,6 +1,4 @@
-/* eslint-disable vars-on-top */
-/* eslint-disable no-var */
-'use strict';
+/* eslint-disable no-console */
 
 import co from 'co';
 import config from 'config';
@@ -9,7 +7,7 @@ import userRepositoryFactory from '../src/api/users/userModel';
 
 const args = process.argv.slice(2);
 
-co(function* () {
+co(function* createAdmin() {
     const connection = yield dbClient(config.apps.api.db);
     const userRepository = userRepositoryFactory(connection.client);
 
@@ -18,10 +16,10 @@ co(function* () {
         password: args[2],
     });
 
-    console.log("\n");
+    console.log('\n');
     console.log(user);
     process.exit();
-}).catch(function(err) {
+}).catch(err => {
     console.error(err.message);
     process.exit();
 });

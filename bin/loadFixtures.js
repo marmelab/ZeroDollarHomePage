@@ -1,11 +1,12 @@
 #!./node_modules/babel/bin/babel-node.js
+/* eslint-disable no-console */
 
 import co from 'co';
 import config from 'config';
 import dbClient from '../src/api/lib/db/client';
 import fixturesFactory from '../e2e/lib/fixturesLoader';
 
-co(function* () {
+co(function* loadFixtures() {
     const db = yield dbClient(config.apps.api.db);
     const fixtureLoader = fixturesFactory(db.client);
     yield fixtureLoader.removeAllFixtures();

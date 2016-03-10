@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { buildClient, compileContract } from '../src/isomorphic/smartContract/ethereumSmartContract';
 
 const client = buildClient();
