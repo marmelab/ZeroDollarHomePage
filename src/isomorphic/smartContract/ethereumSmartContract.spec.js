@@ -3,17 +3,25 @@ import sinon from 'sinon';
 import smartContract from './ethereumSmartContract';
 
 describe('Ethereum Smart Contract', () => {
-    let client;
-    let expectedContract;
-    let compiledContract;
-    let compileContract;
+    const funcToTest = sinon.spy(() => 42);
+    const expectedAbi = [{name: 'funcToTest', type: 'function'}];
+    const expectedContract = {
+        abi: expectedAbi,
+        funcToTest,
+        setAttribute: sinon.spy(),
+        getAttribute: sinon.spy(),
+        publicAttribute: 42,
+    };
+    const contract = { at: sinon.stub().returns(expectedContract) };
+    const compiledContract = { info: { abiDefinition: '' } };
+    const client = {
+        eth: {
+            coinbase: 'coinbase',
+            contract: sinon.stub().returns(contract),
+        },
+    };
 
-    beforeEach(() => {
-        client = {eth: {coinbase: 'coinbase'}};
-        expectedContract = {abi: []};
-        compiledContract = {at: sinon.spy(() => expectedContract)};
-        compileContract = sinon.spy(() => compiledContract);
-    });
+    const compileContract = sinon.stub().returns(compiledContract);
 
     it('should create contract from name', () => {
         smartContract('name', client, compileContract);
@@ -22,26 +30,12 @@ describe('Ethereum Smart Contract', () => {
     });
 
     it('should return the same object than returned by contract', () => {
-        expectedContract = {
-            abi: [],
-            setAttribute: sinon.spy(),
-            getAttribute: sinon.spy(),
-            publicAttribute: 42,
-        };
-
         const res = smartContract('name', client, compileContract);
 
         assert.deepEqual(res, expectedContract);
     });
 
     it('should overwrite all fonctions into a yieldable', function* () {
-        const funcToTest = sinon.spy(() => 42);
-        const expectedAbi = [{name: 'funcToTest', type: 'function'}];
-        expectedContract = {
-            abi: expectedAbi,
-            funcToTest,
-        };
-
         const res = smartContract('name', client, compileContract);
         const funcResult = yield res.funcToTest();
 

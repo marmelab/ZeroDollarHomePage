@@ -3,11 +3,21 @@ import sinon from 'sinon';
 import smartContract from './erisSmartContract';
 
 describe('Eris Smart Contract', () => {
-    let getContract;
+    const funcToTest = sinon.spy(() => 42);
+    const expectedAbi = [
+        {name: 'getContributorToDisplay', type: 'function'}, // This should be excluded
+        {name: 'funcToTest', type: 'function'},
+    ];
 
-    beforeEach(() => {
-        getContract = sinon.spy(() => ({abi: []}));
-    });
+    const expectedContract = {
+        abi: expectedAbi,
+        funcToTest,
+        setAttribute: sinon.spy(),
+        getAttribute: sinon.spy(),
+        publicAttribute: 42,
+    };
+
+    const getContract = sinon.stub().returns(expectedContract);
 
     it('should create contract from name', () => {
         smartContract('name', {url: 'localhost', account: 'valid account'}, [], getContract);
@@ -19,30 +29,12 @@ describe('Eris Smart Contract', () => {
     });
 
     it('should return the same object than returned by contract', () => {
-        const expectedValues = {
-            abi: [],
-            setAttribute: sinon.spy(),
-            getAttribute: sinon.spy(),
-            publicAttribute: 42,
-        };
-        getContract = sinon.spy(() => expectedValues);
-
         const res = smartContract('name', {url: 'localhost', account: 'valid account'}, [], getContract);
 
-        assert.deepEqual(res, expectedValues);
+        assert.deepEqual(res, expectedContract);
     });
 
     it('should overwrite all fonctions into a yieldable', function* () {
-        const funcToTest = sinon.spy(() => 42);
-        const expectedAbi = [
-            {name: 'getContributorToDisplay', type: 'function'}, // This should be excluded
-            {name: 'funcToTest', type: 'function'},
-        ];
-        getContract = sinon.spy(() => ({
-            abi: expectedAbi,
-            funcToTest,
-        }));
-
         const res = smartContract('name', {url: 'localhost', account: 'valid account'}, [], getContract);
         const funcResult = yield res.funcToTest();
 

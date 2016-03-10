@@ -18,8 +18,7 @@ export const getLastNonPublished = function* getLastNonPublished(smartContractPr
     return {
         pullrequestId: result[1],
         authorName: result[2],
-        imageUrl: result[3],
-        createdAt: result[4],
+        createdAt: result[3],
     };
 };
 

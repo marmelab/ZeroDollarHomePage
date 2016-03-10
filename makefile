@@ -132,11 +132,10 @@ load-fixtures:
 
 test:
 	@cp -n ./config/test-dist.js ./config/test.js | true
-	make test-ethereum # comment for travis
+	make test-ethereum
 	make test-frontend-unit
 	make test-api-unit
-	# TODO: restore when implemented
-	# make test-isomorphic-unit
+	make test-isomorphic-unit
 	make test-api-functional
 	make test-frontend-functional
 

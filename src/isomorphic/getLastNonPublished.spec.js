@@ -10,7 +10,6 @@ describe('getLastNonPublished', () => {
                     0,
                     'pullrequestId',
                     'authorName',
-                    'imageUrl',
                     'createdAt',
                 ];
             },
@@ -20,7 +19,6 @@ describe('getLastNonPublished', () => {
         expect(result).to.deep.equal({
             pullrequestId: 'pullrequestId',
             authorName: 'authorName',
-            imageUrl: 'imageUrl',
             createdAt: 'createdAt',
         });
     });
