@@ -37,7 +37,6 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         },
     });
 
-    let imageUrl;
     let imageAsBuffer;
     let pullrequest;
     let part;
@@ -74,7 +73,7 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
 
     if (timeBeforeDisplay <= 0) this.throw(500, 'An error occured while claiming this pull request');
 
-    imageUrl = yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
+    yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
 
     this.body = { timeBeforeDisplay };
 }));
