@@ -13,7 +13,7 @@ export const buildClient = (url = config.blockchain.ethereum.url) => {
 };
 
 export const compileContract = (client, name) => {
-    const rawContract = fs.readFileSync(path.resolve(__dirname, `../ethereum/${name}.sol`), 'utf8');
+    const rawContract = fs.readFileSync(path.resolve(__dirname, `../../ethereum/${name}.sol`), 'utf8');
     const compiledContract = client.eth.compile.solidity(rawContract)[name];
     return client.eth.contract(compiledContract.info.abiDefinition);
 };

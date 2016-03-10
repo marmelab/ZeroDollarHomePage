@@ -16,7 +16,7 @@ export function proxifyFunction(replacedFunction) {
     };
 }
 
-export function getContractFromName(name, {url, account}, ethDirectory = './src/ethereum') {
+export function getContractFromName(name, {url, account}, ethDirectory = '../../ethereum') {
     try {
         fs.accessSync(`${ethDirectory}/epm.json`, fs.F_OK);
     } catch (err) {
