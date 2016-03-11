@@ -33,7 +33,8 @@ export const getReceipt = (client, transactionHash) => new Promise((resolve, rej
     // Throw timeout after 60s
     const cancelId = setTimeout(() => {
         if (checkId !== null) clearTimeout(checkId);
-        reject(new Error('Timeout'));
+        console.log('TIMEOUT');
+        return reject(new Error('Timeout'));
     }, 60 * 1000);
 
     function checkTransaction() {
@@ -41,6 +42,7 @@ export const getReceipt = (client, transactionHash) => new Promise((resolve, rej
 
         if (receipt !== null) {
             clearTimeout(cancelId);
+            console.log('receipt', receipt);
             return resolve(receipt);
         }
 
@@ -62,25 +64,31 @@ export default function ethereumSmartContract(name, client = buildClient(), comp
             if (field.type === 'function') {
                 const replacedAttribute = instance[field.name];
                 instance[field.name] = (...args) => new Promise((resolve, reject) => {
-                    const truc = replacedAttribute.sendTransaction(
-                        ...args,
-                        {from: client.eth.coinbase, to: instance.address},
-                        (err, hash) => {
-                            if (err) return reject(err);
+                    const shouldSendTransaction = args.shift();
+                    console.log('shouldSendTransaction', shouldSendTransaction);
+                    console.log('coinbase', client.eth.coinbase);
 
-                            // @TODO STILL IN WIP
-                            // console.log('hash', hash);
-                            getReceipt(client, hash)
-                                .then(value => {
-                                    console.log('value', value);
-                                    resolve(1);
-                                })
-                                .catch(error => reject(error));
-                            // if (Array.isArray(value)) return resolve(value.filter(v => !!v).map(cleanContractValue));
-                            // return resolve(cleanContractValue(value));
-                        }
-                    );
-                    console.log('truc?', truc);
+                    if (shouldSendTransaction) {
+                        replacedAttribute.sendTransaction(
+                            ...args,
+                            {
+                                from: client.eth.coinbase,
+                            },
+                            (err, hash) => {
+                                console.log('hash', hash);
+                                if (err) return reject(err);
+
+                                return getReceipt(client, hash).then(() => resolve());
+                            }
+                        );
+                    } else {
+                        console.log(`call ${field.name}`);
+                        replacedAttribute.call(...args, (err, value) => {
+                            if (err) return reject(err);
+                            if (Array.isArray(value)) return resolve(value.filter(v => !!v).map(cleanContractValue));
+                            return resolve(cleanContractValue(value));
+                        });
+                    }
                 });
             }
         });

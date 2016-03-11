@@ -3,18 +3,16 @@ contract ZeroDollarHomePage {
 
     enum ResponseCodes {
         Ok,
-        InvalidPullRequestId,
-        InvalidAuthorName,
         RequestNotFound,
-        EmptyQueue,
-        PullRequestAlreadyClaimed
+        EmptyQueue
     }
 
     struct Request {
         uint id;
         string authorName;
         uint createdAt; // timestamp for pull request creation
-        uint displayedAt; // timestamp for image display
+        uint displayDate; // timestamp for image display
+        uint displayedAt; // timestamp for when image has been displayed
     }
 
     mapping (uint => Request) _requests; // key is the pull request id
@@ -41,20 +39,17 @@ contract ZeroDollarHomePage {
     /*
      * Register a new pull request merged on github
      */
-    function newRequest(uint pullRequestId, string authorName) returns (uint8 code, uint displayDate) {
+    function newRequest(uint pullRequestId, string authorName) returns (uint code, uint displayDate) {
         if (pullRequestId <= 0) {
-            code = uint8(ResponseCodes.InvalidPullRequestId);
-            return;
+            throw;
         }
 
-        if (_requests[pullRequestId].id == pullRequestId) {
-            code = uint8(ResponseCodes.PullRequestAlreadyClaimed);
-            return;
-        }
+        /*if (_requests[pullRequestId].id == pullRequestId) {
+            throw;
+        }*/
 
         if (bytes(authorName).length <= 0) {
-            code = uint8(ResponseCodes.InvalidAuthorName);
-            return;
+            throw;
         }
 
         numberOfRequests += 1;
@@ -64,9 +59,22 @@ contract ZeroDollarHomePage {
 
         _queue.push(pullRequestId);
         queueLength += 1;
+        _requests[pullRequestId].displayDate = now + (queueLength * 1 days);
 
         code = uint8(ResponseCodes.Ok);
         displayDate = now + (queueLength * 1 days);
+    }
+
+    function getRequest(uint pullRequestId) returns (uint code, uint displayDate) {
+        var request = _requests[pullRequestId];
+
+        if (request.id != pullRequestId) {
+            code = uint8(ResponseCodes.RequestNotFound);
+            return;
+        }
+
+        code = uint8(ResponseCodes.Ok);
+        displayDate = request.displayDate;
     }
 
     /*

@@ -7,18 +7,10 @@ describe('getReponseCodeMessage', () => {
     });
 
     it('should returns the correct message for code 1', () => {
-        expect(getReponseCodeMessage(1)).to.equal('Invalid pull request identifier');
+        expect(getReponseCodeMessage(1)).to.equal('Request not found');
     });
 
     it('should returns the correct message for code 2', () => {
-        expect(getReponseCodeMessage(2)).to.equal('Invalid pull request author name');
-    });
-
-    it('should returns the correct message for code 3', () => {
-        expect(getReponseCodeMessage(3)).to.equal('Request not found');
-    });
-
-    it('should returns the correct message for code 4', () => {
-        expect(getReponseCodeMessage(4)).to.equal('Empty queue');
+        expect(getReponseCodeMessage(2)).to.equal('Empty queue');
     });
 });

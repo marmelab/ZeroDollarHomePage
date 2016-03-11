@@ -9,10 +9,12 @@ import getBufferFromImageStream from '../lib/getBufferFromImageStream';
 import githubApiFactory from '../github/githubApi';
 import isSafeImageFactory from '../vision/isSafeImage';
 import saveFileFactory from '../lib/s3/uploadToS3';
+import getRequestFactory from '../../isomorphic/getRequest';
 import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
+const getRequest = getRequestFactory(config.blockchain);
 const newRequest = newRequestFactory(config.blockchain);
 const isSafeImage = isSafeImageFactory(config.apps.api.vision);
 
@@ -69,7 +71,10 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         }
     }
 
-    const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login);
+    const truc = yield newRequest(true, pullrequest.id, pullrequest.user.login);
+    console.log('truc', truc);
+    const timeBeforeDisplay = yield getRequest(false, pullrequest.id);
+    console.log('timeBeforeDisplay', timeBeforeDisplay);
 
     if (timeBeforeDisplay <= 0) this.throw(500, 'An error occured while claiming this pull request');
 
