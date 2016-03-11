@@ -6,9 +6,9 @@ import updateCurrentFileFactory from './lib/s3/renameFileInS3';
 import closeRequestIsomorphic from '../isomorphic/closeRequest';
 
 export function* updateImageJob(closeRequest, getLastNonPublished, updateCurrentFile) {
-    yield closeRequest();
+    yield closeRequest(true);
 
-    const result = yield getLastNonPublished();
+    const result = yield getLastNonPublished(false);
     if (!result) return;
 
     yield updateCurrentFile(`${result.id}.jpg`);

@@ -6,6 +6,7 @@ import cleanContractValue from './cleanSmartContractValue';
 
 export function proxifyFunction(replacedFunction) {
     return (...args) => {
+        args.shift(); // Remove first arg, only used for Ethereum
         return new Promise((resolve, reject) => {
             args.push((err, value) => {
                 if (err) return reject(err);
