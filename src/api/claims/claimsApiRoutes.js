@@ -9,7 +9,7 @@ import getBufferFromImageStream from '../lib/getBufferFromImageStream';
 import githubApiFactory from '../github/githubApi';
 import isSafeImageFactory from '../vision/isSafeImage';
 import saveFileFactory from '../lib/s3/uploadToS3';
-import getRequestFactory from '../../isomorphic/newRequest';
+import getRequestFactory from '../../isomorphic/getRequest';
 import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();

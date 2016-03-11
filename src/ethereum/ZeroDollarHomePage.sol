@@ -44,9 +44,9 @@ contract ZeroDollarHomePage {
             throw;
         }
 
-        if (_requests[pullRequestId].id == pullRequestId) {
+        /*if (_requests[pullRequestId].id == pullRequestId) {
             throw;
-        }
+        }*/
 
         if (bytes(authorName).length <= 0) {
             throw;

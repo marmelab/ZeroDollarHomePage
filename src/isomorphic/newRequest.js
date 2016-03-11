@@ -1,10 +1,10 @@
 import initializeProxy from './initializeProxy';
 import getReponseCodeMessageFunc from './getReponseCodeMessage';
 
-export const newRequest = (smartContractProxy, getReponseCodeMessage) => function* newRequestFunc(pullrequestId, authorName, imageUrl) {
+export const newRequest = (smartContractProxy, getReponseCodeMessage) => function* newRequestFunc(pullrequestId, authorName) {
     // result will be an array containing the response code at index 0 and the publication timestamp at index 1
     // Trying to destructure array with `const [code, timestamp] = result;` throws an error
-    const result = yield smartContractProxy.newRequest(pullrequestId, authorName, imageUrl);
+    const result = yield smartContractProxy.newRequest(pullrequestId, authorName);
     if (result[0] !== 0) {
         throw new Error(getReponseCodeMessage(result[0]));
     }
