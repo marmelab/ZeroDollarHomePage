@@ -29,7 +29,7 @@ build: clear-build
 	@./node_modules/.bin/webpack --progress
 
 build-ethereum:
-	solc --bin --abi -o ./src/ethereum ./src/ethereum/ZeroDollarHomePage.sol ./src/ethereum/ZeroDollarHomePageTest.sol
+	solc --bin --abi -o ./src/ethereum ./src/ethereum/ZeroDollarHomePage.sol
 
 clean:
 	git clean -nxdf
@@ -217,5 +217,5 @@ delete-blockchain: stop-blockchain
 deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
 
-deploy-contracts-ethereum:
+deploy-contracts-ethereum: build-ethereum
 	@./node_modules/.bin/babel-node ./bin/deployEthereumContracts.js

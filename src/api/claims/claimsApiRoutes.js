@@ -71,10 +71,8 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         }
     }
 
-    const truc = yield newRequest(true, pullrequest.id, pullrequest.user.login);
-    console.log('truc', truc);
+    yield newRequest(true, pullrequest.id, pullrequest.user.login);
     const timeBeforeDisplay = yield getRequest(false, pullrequest.id);
-    console.log('timeBeforeDisplay', timeBeforeDisplay);
 
     if (timeBeforeDisplay <= 0) this.throw(500, 'An error occured while claiming this pull request');
 

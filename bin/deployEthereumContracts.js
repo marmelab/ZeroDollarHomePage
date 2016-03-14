@@ -1,25 +1,25 @@
 /* eslint-disable no-console */
+import config from 'config';
 import fs from 'fs';
-import { buildClient, compileContract, getReceipt } from '../src/isomorphic/smartContract/ethereumSmartContract';
+import { buildClient, compileContract } from '../src/isomorphic/smartContract/ethereumSmartContract';
 
 const client = buildClient();
 const compiledContract = compileContract(client, 'ZeroDollarHomePage');
+console.log(JSON.stringify(compiledContract.info.abiDefinition, null, 2));
+const contract = client.eth.contract(compiledContract.info.abiDefinition);
 
-const estimatedGas = client.eth.estimateGas({
-    from: client.eth.coinbase,
+// deploy new contract
+contract.new({
     data: compiledContract.code,
-});
+    from: config.blockchain.ethereum.senderAddress,
+    gas: 1000000,
+}, (err, deployedContract) => {
+    if (err) return console.error(err);
 
-const transactionHash = client.eth.sendTransaction({
-    from: client.eth.coinbase,
-    data: compiledContract.code,
-    gas: estimatedGas,
+    if (!deployedContract.address) {
+        console.log({transactionHash: deployedContract.transactionHash});
+    } else {
+        fs.writeFileSync(`${__dirname}/../.eris/contractAddress.txt`, deployedContract.address, 'utf8');
+        console.log('Contract deployed at', deployedContract.address);
+    }
 });
-
-// Wait until the blockchain have accepted our transaction
-getReceipt(client, transactionHash)
-    .then(receipt => {
-        fs.writeFileSync(`${__dirname}/../.eris/contractAddress.txt`, receipt.contractAddress, 'utf8');
-        console.log('Contract deployed at', receipt.contractAddress);
-    })
-    .catch(err => console.log('An error occured:', err.message));

@@ -8,6 +8,7 @@ import cleanContractValue from './cleanSmartContractValue';
 export const buildClient = (url = config.blockchain.ethereum.url) => {
     const web3 = new Web3();
     web3.setProvider(new Web3.providers.HttpProvider(url));
+    web3.eth.defaultAccount = web3.eth.coinbase;
 
     return web3;
 };
@@ -33,7 +34,7 @@ export const getReceipt = (client, transactionHash) => new Promise((resolve, rej
     // Throw timeout after 60s
     const cancelId = setTimeout(() => {
         if (checkId !== null) clearTimeout(checkId);
-        console.log('TIMEOUT');
+        console.log('getReceipt TIMEOUT');
         return reject(new Error('Timeout'));
     }, 60 * 1000);
 
@@ -46,11 +47,40 @@ export const getReceipt = (client, transactionHash) => new Promise((resolve, rej
             return resolve(receipt);
         }
 
-        checkId = setTimeout(checkTransaction, 1000);
+        checkId = setTimeout(checkTransaction, 10000);
     }
 
     checkTransaction();
 });
+
+/*
+* Watch for a particular transaction hash and call the awaiting function when done;
+* Ether-pudding uses another method, with web3.eth.getTransaction(...) and checking the txHash;
+* on https://github.com/ConsenSys/ether-pudding/blob/master/index.js
+*/
+export const waitTx = (client, txHash, callback) => {
+    let blockCounter = 15;
+    // Wait for tx to be finished
+    let filter = client.eth.filter('latest').watch((err, blockHash) => {
+        if (blockCounter <= 0) {
+            filter.stopWatching();
+            filter = null;
+            if (callback) return callback(err, false);
+            return false;
+        }
+        // Get info about latest Ethereum block
+        const block = client.eth.getBlock(blockHash);
+        --blockCounter;
+        // Found tx hash?
+        if (block.transactions.indexOf(txHash) > -1) {
+            // Tx is finished
+            filter.stopWatching();
+            filter = null;
+            if (callback) return callback(err, true);
+            return true;
+        }
+    });
+};
 
 export default function ethereumSmartContract(name, client = buildClient(), compile = compileContract) {
     const compiledContract = compile(client, name);
@@ -59,34 +89,49 @@ export default function ethereumSmartContract(name, client = buildClient(), comp
     const instance = contract.at(address);
 
     instance.abi
-        .filter(field => field.name)
-        .forEach(field => {
+        .filter(field => {
             if (field.type === 'function') {
                 const replacedAttribute = instance[field.name];
+
+                if (!field.constant) {
+                    replacedAttribute.waitTransaction = (...args) => {
+                        const customArgs = args.slice().filter(a => a !== undefined);
+                        let oldCall;
+
+                        if (typeof(args[args.length - 1]) === 'function') {
+                            oldCall = customArgs.pop(); // Modify the args array!
+                        }
+
+                        const newCall = (_, tx) => {
+                            waitTx(client, tx, oldCall);
+                        };
+
+                        customArgs.push(newCall);
+                        replacedAttribute.sendTransaction.apply(instance, customArgs);
+                    };
+                }
+
                 instance[field.name] = (...args) => new Promise((resolve, reject) => {
                     const shouldSendTransaction = args.shift();
-                    console.log('shouldSendTransaction', shouldSendTransaction);
-                    console.log('coinbase', client.eth.coinbase);
-
                     if (shouldSendTransaction) {
-                        replacedAttribute.sendTransaction(
-                            ...args,
-                            {
-                                from: client.eth.coinbase,
-                            },
-                            (err, hash) => {
-                                console.log('hash', hash);
-                                if (err) return reject(err);
-
-                                return getReceipt(client, hash).then(() => resolve());
+                        replacedAttribute.waitTransaction(...args, {
+                            to: client.eth.coinbase,
+                        }, (err, succeeded) => {
+                            if (err) {
+                                console.error({ err });
+                                return reject(err);
                             }
-                        );
+
+                            return resolve(succeeded);
+                        });
                     } else {
-                        console.log(`call ${field.name}`);
                         replacedAttribute.call(...args, (err, value) => {
-                            if (err) return reject(err);
+                            if (err) {
+                                console.error({ err });
+                                return reject(err);
+                            }
                             if (Array.isArray(value)) return resolve(value.filter(v => !!v).map(cleanContractValue));
-                            return resolve(cleanContractValue(value));
+                            return resolve(value.c);
                         });
                     }
                 });

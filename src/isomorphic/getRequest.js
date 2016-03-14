@@ -1,16 +1,16 @@
+import co from 'co';
+import moment from 'moment';
 import initializeProxy from './initializeProxy';
 import getReponseCodeMessageFunc from './getReponseCodeMessage';
 
-export const getRequest = (smartContractProxy, getReponseCodeMessage) => function* getRequestFunc(sendTransaction, pullrequestId) {
+export const getRequest = smartContractProxy => (sendTransaction, pullrequestId) => new Promise(co.wrap(function* getRequestFunc(resolve, reject) {
     // result will be an array containing the response code at index 0 and the publication timestamp at index 1
     // Trying to destructure array with `const [code, timestamp] = result;` throws an error
-    const result = yield smartContractProxy.getRequest(sendTransaction, pullrequestId);
-    if (result[0] !== 0) {
-        throw new Error(getReponseCodeMessage(result[0]));
-    }
+    const position = yield smartContractProxy.getRequestPosition(sendTransaction, pullrequestId);
+    const timeBeforeDisplay = moment().add(position[0] + 1, 'days').toDate();
 
-    return result[1];
-};
+    resolve(timeBeforeDisplay);
+}));
 
 export default (config) => function* getRequestDefault(sendTransaction, pullrequestId) {
     const smartContractProxy = initializeProxy(config);
