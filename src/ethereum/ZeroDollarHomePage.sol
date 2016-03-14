@@ -13,14 +13,15 @@ contract ZeroDollarHomePage {
     // key is the pull request id
     // value the estimated time before display when the pr was claimed
     mapping (uint => Request) _requests;
-    uint[] _allRequests;
     uint[] _queue;
+    uint _queueLength;
     uint _current;
     address owner;
 
     function ZeroDollarHomePage() {
         owner = msg.sender;
         _current = 0;
+        _queueLength = 0;
     }
 
     function remove() {
@@ -43,25 +44,25 @@ contract ZeroDollarHomePage {
         }
 
         _requests[pullRequestId].id = pullRequestId;
-        _requests[pullRequestId].position = _queue.length;
+        _requests[pullRequestId].position = _queueLength;
 
         _queue.push(pullRequestId);
-        _allRequests.push(pullRequestId);
+        _queueLength++;
     }
 
     /*
      * Move to the next request in _queue.
      */
-    function closeRequest() returns (uint8) {
+    function closeRequest() returns (uint) {
         if (_queue.length == 0) {
             return uint8(ResponseCodes.EmptyQueue);
         }
 
-        delete _queue[0];
         _current = _current + 1;
+        _queueLength--;
 
-        for (uint i = 0; i < _allRequests.length - 1; i++) {
-            _requests[_allRequests[i]].position--;
+        for (uint i = 0; i < _queue.length - 1; i++) {
+            _requests[_queue[i]].position--;
         }
 
         return uint8(ResponseCodes.Ok);
@@ -72,15 +73,15 @@ contract ZeroDollarHomePage {
     }
 
     function getQueueLength() constant returns (uint) {
-        return _queue.length;
+        return _queueLength;
     }
 
     /*
      * Get the next pull-request to be displayed on the ZeroDollarHomePage site
      */
     function getLastNonPublished() constant returns (uint) {
-        if (_queue.length == 0) {
-            return uint(ResponseCodes.EmptyQueue);
+        if (_queueLength == 0) {
+            return 0;
         }
 
         return _queue[_current];

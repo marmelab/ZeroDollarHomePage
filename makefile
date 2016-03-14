@@ -29,7 +29,7 @@ build: clear-build
 	@./node_modules/.bin/webpack --progress
 
 build-ethereum:
-	solc --bin --abi -o ./src/ethereum ./src/ethereum/ZeroDollarHomePage.sol
+	solc --bin --abi -o ./src/ethereum ./src/ethereum/ZeroDollarHomePage.sol ./src/ethereum/ZeroDollarHomePageTest.sol
 
 clean:
 	git clean -nxdf
