@@ -224,15 +224,7 @@ deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
 
 init-ethereum:
-	node -e " \
-	    var j = require('./CustomGenesis-dist.json'); \
-	    j.alloc = { \
-			\"${ETHEREUM_DEFAULT_ACCOUNT}\": { \
-            	\"balance\": \"20000000000000000000\" \
-        	} \
-		}; \
-	    var s = JSON.stringify(j, null, 2); \
-	    require('fs').writeFileSync('./CustomGenesis.json', s);"
+	@sed -e s/__ACCOUNT_ADDRESS__/${ETHEREUM_DEFAULT_ACCOUNT}/g ./CustomGenesis.json-dist > ./CustomGenesis.json
 
 start-ethereum:
 	geth \
