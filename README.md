@@ -54,6 +54,26 @@ watched by the application.
 
 That's it. Repeat for every repositories you want to bind.
 
+### Ethereum
+
+Create a file named `.ethereum` and put your default ethereum account address in it.
+
+Starts a private ethereum network for development by running:
+```sh
+make start-ethereum
+```
+
+A miner must be running on this network to allow contracts deployment and blockchain operations through those contracts.
+Starts the miner by running:
+```sh
+make run-ethereum-miner
+```
+
+Deploying the contract is done by running:
+```sh
+make deploy-contracts-ethereum
+```
+
 ## Develop
 
 ```sh
