@@ -13,6 +13,7 @@ describe('Ethereum Smart Contract', () => {
         publicAttribute: 42,
     };
     const contract = { at: sinon.stub().returns(expectedContract) };
+    const getContractAddressFrom = sinon.stub().returns('address');
     const compiledContract = { info: { abiDefinition: '' } };
     const client = {
         eth: {
@@ -22,25 +23,22 @@ describe('Ethereum Smart Contract', () => {
     };
 
     const compileContract = sinon.stub().returns(compiledContract);
+    const contractInstance = smartContract('name', client, compileContract, getContractAddressFrom);
 
     it('should create contract from name', () => {
-        smartContract('name', client, compileContract);
-
+        smartContract('name', client, compileContract, getContractAddressFrom);
         assert.deepEqual(compileContract.getCall(0).args, [client, 'name']);
     });
 
     it('should return the same object than returned by contract', () => {
-        const res = smartContract('name', client, compileContract);
-
-        assert.deepEqual(res, expectedContract);
+        assert.deepEqual(contractInstance, expectedContract);
     });
 
-    it('should overwrite all fonctions into a yieldable', function* () {
-        const res = smartContract('name', client, compileContract);
-        const funcResult = yield res.funcToTest();
+    it('should overwrite all fonctions into a yieldable', function* () { // eslint-disable-line func-names
+        const funcResult = yield contractInstance.funcToTest();
 
-        assert.deepEqual(Object.keys(res), ['abi', 'funcToTest']);
-        assert.deepEqual(res.abi, expectedAbi);
+        assert.deepEqual(Object.keys(contractInstance), ['abi', 'funcToTest']);
+        assert.deepEqual(contractInstance.abi, expectedAbi);
         assert.deepEqual(funcResult, 42);
     });
 });

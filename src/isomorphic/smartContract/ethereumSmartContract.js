@@ -18,7 +18,7 @@ export const compileContract = (client, name) => {
     return client.eth.compile.solidity(rawContract)[name];
 };
 
-export const getContractAddress = () => {
+export const getContractAddressFromFile = () => {
     const addressPath = path.resolve(__dirname, '../../../.eris/contractAddress.txt');
     try {
         return fs.readFileSync(addressPath, 'utf8');
@@ -34,7 +34,6 @@ export const getReceipt = (client, transactionHash) => new Promise((resolve, rej
     // Throw timeout after 60s
     const cancelId = setTimeout(() => {
         if (checkId !== null) clearTimeout(checkId);
-        console.log('getReceipt TIMEOUT');
         return reject(new Error('Timeout'));
     }, 60 * 1000);
 
@@ -43,7 +42,6 @@ export const getReceipt = (client, transactionHash) => new Promise((resolve, rej
 
         if (receipt !== null) {
             clearTimeout(cancelId);
-            console.log('receipt', receipt);
             return resolve(receipt);
         }
 
@@ -82,7 +80,7 @@ export const waitTx = (client, txHash, callback) => {
     });
 };
 
-export default function ethereumSmartContract(name, client = buildClient(), compile = compileContract) {
+export default function ethereumSmartContract(name, client = buildClient(), compile = compileContract, getContractAddress = getContractAddressFromFile) {
     const compiledContract = compile(client, name);
     const contract = client.eth.contract(compiledContract.info.abiDefinition);
     const address = getContractAddress();
