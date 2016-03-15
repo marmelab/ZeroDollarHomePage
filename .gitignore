@@ -17,3 +17,5 @@ src/ethereum/*.bin
 src/ethereum/abi/*
 src/ethereum/epm.json
 .eris/*
+CustomGenesis.json
+.ethereum

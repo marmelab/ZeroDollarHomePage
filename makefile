@@ -10,6 +10,9 @@ CLIENT_PASSWORD ?= supadupa42!
 
 BLOCKCHAIN_ROOT_ADDR ?= $(shell cat ./.eris/addr.txt)
 
+ETHEREUM_DEFAULT_ACCOUNT ?= $(shell cat ./.ethereum)
+ETHEREUM_DATA_DIRECTORY ?= ${HOME}/ethereum-data
+ETHEREUM_NETWORK_NAME ?= TestnetMainNode
 
 # Initialization ===============================================================
 copy-conf:
@@ -177,6 +180,9 @@ create-client:
 init-start-image:
 	./node_modules/babel-cli/bin/babel-node.js ./bin/renameStartImageInS3.js 'start.jpg';
 
+update-current-image:
+	./node_modules/babel-cli/bin/babel-node.js ./bin/updateCurrentImageFromBlockchain.js;
+
 # Ethereum =====================================================================
 eris-start-keys-services:
 	@eris version  # Check if eris is installed
@@ -217,5 +223,23 @@ delete-blockchain: stop-blockchain
 deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
 
-deploy-contracts-ethereum:
+init-ethereum:
+	@sed -e s/__ACCOUNT_ADDRESS__/${ETHEREUM_DEFAULT_ACCOUNT}/g ./CustomGenesis.json-dist > ./CustomGenesis.json
+
+start-ethereum:
+	geth \
+		--genesis ./CustomGenesis.json \
+		--nodiscover \
+		--maxpeers 0 \
+		--rpc \
+		--datadir ${ETHEREUM_DATA_DIRECTORY} \
+		--identity ${ETHEREUM_NETWORK_NAME} \
+		--etherbase ${ETHEREUM_DEFAULT_ACCOUNT} \
+		--unlock ${ETHEREUM_DEFAULT_ACCOUNT} \
+		console
+
+run-ethereum-miner:
+	ethminer -C --no-precompute -t 1
+
+deploy-contracts-ethereum: build-ethereum
 	@./node_modules/.bin/babel-node ./bin/deployEthereumContracts.js
