@@ -1,11 +1,11 @@
 import initializeProxy from './initializeProxy';
 import getReponseCodeMessageFunc from './getReponseCodeMessage';
 
-export const getLastNonPublished = function* getLastNonPublished(smartContractProxy, getReponseCodeMessage) {
+export const getLastNonPublished = (smartContractProxy, getReponseCodeMessage) => function* getLastNonPublishedFunc(sendTransaction) {
     // getLastNonPublished() returns (uint8 code, uint id, string authorName, string imageUrl, uint createdAt)
     // result will be an array containing the response code at index 0 and rest after
     // Trying to destructure array with `const [code, ...] = result;` throws an error
-    const result = yield smartContractProxy.getLastNonPublished();
+    const result = yield smartContractProxy.getLastNonPublished(sendTransaction);
     // 5 = EmptyQueue
     if (result[0] === 5) {
         return false;
@@ -22,7 +22,8 @@ export const getLastNonPublished = function* getLastNonPublished(smartContractPr
     };
 };
 
-export default (config) => function* newRequest() {
+export default (config) => function* newRequest(sendTransaction) {
     const smartContractProxy = initializeProxy(config);
-    return getLastNonPublished(smartContractProxy, getReponseCodeMessageFunc);
+    const request = getLastNonPublished(smartContractProxy, getReponseCodeMessageFunc);
+    return yield request(sendTransaction);
 };

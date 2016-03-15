@@ -44,7 +44,7 @@ export default (state = initialState, { type, payload }) => {
     case claimActionTypes.claim.SUCCESS:
         return {
             ...state,
-            timeBeforeDisplay: moment.unix(payload),
+            timeBeforeDisplay: moment(payload),
             claimError: null,
             claiming: false,
         };

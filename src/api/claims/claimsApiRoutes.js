@@ -9,10 +9,12 @@ import getBufferFromImageStream from '../lib/getBufferFromImageStream';
 import githubApiFactory from '../github/githubApi';
 import isSafeImageFactory from '../vision/isSafeImage';
 import saveFileFactory from '../lib/s3/uploadToS3';
+import getRequestFactory from '../../isomorphic/getRequest';
 import newRequestFactory from '../../isomorphic/newRequest';
 
 const app = koa();
 const saveFile = saveFileFactory(config.apps.api.s3);
+const getRequest = getRequestFactory(config.blockchain);
 const newRequest = newRequestFactory(config.blockchain);
 const isSafeImage = isSafeImageFactory(config.apps.api.vision);
 
@@ -37,7 +39,6 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         },
     });
 
-    let imageUrl;
     let imageAsBuffer;
     let pullrequest;
     let part;
@@ -70,11 +71,12 @@ app.use(koaRoute.post('/:repository/:pullRequestNumber', function* loadPullReque
         }
     }
 
-    const timeBeforeDisplay = yield newRequest(pullrequest.id, pullrequest.user.login);
+    yield newRequest(true, pullrequest.id, pullrequest.user.login);
+    const timeBeforeDisplay = yield getRequest(false, pullrequest.id);
 
     if (timeBeforeDisplay <= 0) this.throw(500, 'An error occured while claiming this pull request');
 
-    imageUrl = yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
+    yield saveFile(`${pullrequest.id}.jpg`, imageAsBuffer);
 
     this.body = { timeBeforeDisplay };
 }));

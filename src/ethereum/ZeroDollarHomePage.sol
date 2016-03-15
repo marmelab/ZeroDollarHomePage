@@ -1,35 +1,27 @@
 contract ZeroDollarHomePage {
-    uint constant ShaLength = 40;
-
     enum ResponseCodes {
         Ok,
-        InvalidPullRequestId,
-        InvalidAuthorName,
         RequestNotFound,
-        EmptyQueue,
-        PullRequestAlreadyClaimed
+        EmptyQueue
     }
 
     struct Request {
         uint id;
-        string authorName;
-        uint createdAt; // timestamp for pull request creation
-        uint displayedAt; // timestamp for image display
+        uint position; // position at creation time
     }
 
-    mapping (uint => Request) _requests; // key is the pull request id
-    uint public numberOfRequests;
+    // key is the pull request id
+    // value the estimated time before display when the pr was claimed
+    mapping (uint => Request) _requests;
     uint[] _queue;
-    uint public queueLength;
+    uint _queueLength;
     uint _current;
     address owner;
 
     function ZeroDollarHomePage() {
         owner = msg.sender;
-
-        numberOfRequests = 0;
-        queueLength = 0;
         _current = 0;
+        _queueLength = 0;
     }
 
     function remove() {
@@ -41,62 +33,57 @@ contract ZeroDollarHomePage {
     /*
      * Register a new pull request merged on github
      */
-    function newRequest(uint pullRequestId, string authorName) returns (uint8 code, uint displayDate) {
+    function newRequest(uint pullRequestId) {
         if (pullRequestId <= 0) {
-            code = uint8(ResponseCodes.InvalidPullRequestId);
-            return;
+            throw;
         }
 
+        // Check that the pr hasn't already be claimed
         if (_requests[pullRequestId].id == pullRequestId) {
-            code = uint8(ResponseCodes.PullRequestAlreadyClaimed);
-            return;
+            throw;
         }
 
-        if (bytes(authorName).length <= 0) {
-            code = uint8(ResponseCodes.InvalidAuthorName);
-            return;
-        }
-
-        numberOfRequests += 1;
         _requests[pullRequestId].id = pullRequestId;
-        _requests[pullRequestId].authorName = authorName;
-        _requests[pullRequestId].createdAt = now;
+        _requests[pullRequestId].position = _queueLength;
 
         _queue.push(pullRequestId);
-        queueLength += 1;
-
-        code = uint8(ResponseCodes.Ok);
-        displayDate = now + (queueLength * 1 days);
+        _queueLength++;
     }
 
     /*
-     * Marke a pull request with its image has having been displayed.
+     * Move to the next request in _queue.
      */
-    function closeRequest() returns (uint8) {
-        if (queueLength == 0) {
+    function closeRequest() returns (uint) {
+        if (_queue.length == 0) {
             return uint8(ResponseCodes.EmptyQueue);
         }
 
-        _requests[_queue[_current]].displayedAt = now;
-        delete _queue[0];
-        queueLength -= 1;
         _current = _current + 1;
+        _queueLength--;
+
+        for (uint i = 0; i < _queue.length - 1; i++) {
+            _requests[_queue[i]].position--;
+        }
+
         return uint8(ResponseCodes.Ok);
     }
 
+    function getRequestPosition(uint pullRequestId) constant returns (uint) {
+        return _requests[pullRequestId].position;
+    }
+
+    function getQueueLength() constant returns (uint) {
+        return _queueLength;
+    }
+
     /*
-     * Get the next image to be displayed on the ZeroDollarHomePage site
+     * Get the next pull-request to be displayed on the ZeroDollarHomePage site
      */
-    function getLastNonPublished() returns (uint8 code, uint id, string authorName, uint createdAt) {
-        if (queueLength == 0) {
-            code = uint8(ResponseCodes.EmptyQueue);
-            return;
+    function getLastNonPublished() constant returns (uint) {
+        if (_queueLength == 0) {
+            return 0;
         }
 
-        var request = _requests[_queue[_current]];
-        id = request.id;
-        authorName = request.authorName;
-        createdAt = request.createdAt;
-        code = uint8(ResponseCodes.Ok);
+        return _queue[_current];
     }
 }

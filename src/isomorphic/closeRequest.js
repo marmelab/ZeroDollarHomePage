@@ -1,10 +1,10 @@
 import initializeProxy from './initializeProxy';
 import getReponseCodeMessageFunc from './getReponseCodeMessage';
 
-export const closeRequest = function* closeRequestFunc(smartContractProxy, getReponseCodeMessage) {
+export const closeRequest = (smartContractProxy, getReponseCodeMessage) => function* closeRequestFunc(sendTransaction) {
     // result will be an array containing the response code at index 0 and the publication timestamp at index 1
     // Trying to destructure array with `const [code, timestamp] = result;` throws an error
-    const result = yield smartContractProxy.closeRequest();
+    const result = yield smartContractProxy.closeRequest(sendTransaction);
 
     // 5 = EmptyQueue
     if (result[0] === 5) return false;
@@ -14,7 +14,8 @@ export const closeRequest = function* closeRequestFunc(smartContractProxy, getRe
     return true;
 };
 
-export default (config) => function* closeRequestDefault() {
+export default (config) => function* closeRequestDefault(sendTransaction) {
     const smartContractProxy = initializeProxy(config);
-    return closeRequest(smartContractProxy, getReponseCodeMessageFunc);
+    const request = closeRequest(smartContractProxy, getReponseCodeMessageFunc);
+    return yield request(sendTransaction);
 };
