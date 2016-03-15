@@ -51,7 +51,7 @@ class Claim extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.repository !== nextProps.repository || this.props.pullRequestNumber !== nextProps.pullRequestNumber) {
-            this.props.loadPullRequest(this.props.repository, this.props.pullRequestNumber);
+            this.props.loadPullRequest(this.props.repository, nextProps.pullRequestNumber);
         }
     }
 
@@ -127,6 +127,7 @@ Claim.propTypes = {
     pullRequestNumber: PropTypes.string,
     repository: PropTypes.string,
     timeBeforeDisplay: PropTypes.object,
+    user: PropTypes.object,
 };
 
 function mapStateToProps(state) {
