@@ -1,56 +1,29 @@
-import "./Asserter.sol";
+import "./Test.sol";
 import "./ZeroDollarHomePage.sol";
-contract ZeroDollarHomePageTest is Asserter {
 
-    function test_newRequest_should_returns_Ok() {
+contract ZeroDollarHomePageTest is Test {
+    function testNewRequest_should_insert_a_new_request() {
         ZeroDollarHomePage app = new ZeroDollarHomePage();
-        var (code,) = app.newRequest(42, "toto");
-
-        assertUintsEqual(code, uint8(ZeroDollarHomePage.ResponseCodes.Ok), "Should have returned Ok");
-    }
-
-    function test_newRequest_should_not_allow_multiple_claim_on_same_pullrequet() {
-        ZeroDollarHomePage app = new ZeroDollarHomePage();
-        app.newRequest(42, "toto");
-        var (code,) = app.newRequest(42, "toto");
-
-        assertUintsEqual(code, uint8(ZeroDollarHomePage.ResponseCodes.PullRequestAlreadyClaimed), "Should have returned PullRequestAlreadyClaimed");
-    }
-
-    function test_newRequest_should_returns_correct_date() {
-        ZeroDollarHomePage app = new ZeroDollarHomePage();
-        var (code, publicationDate) = app.newRequest(42, "toto");
-
-        assertUintGT(publicationDate, now, "Date should have been greater than now");
-    }
-
-    function test_newRequest_should_returns_correct_date_when_queue_grows() {
-        ZeroDollarHomePage app = new ZeroDollarHomePage();
-        app.newRequest(42, "toto");
-        var (code, publicationDate) = app.newRequest(43, "toto");
-
-        assertUintGT(publicationDate, now + 1 days, "Date should have been greater than now + 1 day");
-    }
-
-    function test_closeRequest_should_returns_Ok_and_remove_request_from_queue() {
-        ZeroDollarHomePage app = new ZeroDollarHomePage();
-        app.newRequest(42, "toto");
-
-        var result = app.closeRequest();
-        assertUintsEqual(result, uint8(ZeroDollarHomePage.ResponseCodes.Ok), "Should have returned Ok");
-        var (code,,,) = app.getLastNonPublished();
-        assertUintsEqual(code, 4, "Should have returned id 4");
-    }
-
-    function test_getLastNonPublished_should_returns_the_request() {
-        ZeroDollarHomePage app = new ZeroDollarHomePage();
-        app.newRequest(42, "toto");
-        app.newRequest(43, "toto2");
-        var (code, id,,) = app.getLastNonPublished();
-        assertUintsEqual(id, 42, "Should have returned id 42");
+        app.newRequest(42);
         app.closeRequest();
-        (code, id,,) = app.getLastNonPublished();
-        assertUintsEqual(id, 43, "Should have returned id 43");
+        app.getLastNonPublished().assertEqual(42, "Should have returned 42");
     }
 
+    function testNewRequest_should_not_insert_duplicate_request() {
+        ZeroDollarHomePage app = new ZeroDollarHomePage();
+        app.newRequest(42);
+        app.newRequest(42);
+        app.closeRequest();
+        app.closeRequest();
+        app.getLastNonPublished().assertEqual(0, "Should have returned 0"); // Should be an empty queue
+    }
+
+    function test_closeRequest_should_close_current_request_and_move_queue_forward() {
+        ZeroDollarHomePage app = new ZeroDollarHomePage();
+        app.newRequest(42);
+        app.newRequest(43);
+        app.closeRequest();
+        app.closeRequest();
+        app.getLastNonPublished().assertEqual(43, "Should have returned 43");
+    }
 }

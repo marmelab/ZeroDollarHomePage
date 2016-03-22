@@ -1,23 +1,31 @@
 import co from 'co';
 import config from 'config';
 import { scheduleJob } from 'node-schedule';
-import getLastNonPublishedIsomorphic from '../isomorphic/getLastNonPublished';
+import getLastNonPublishedFactory from '../isomorphic/getLastNonPublished';
 import updateCurrentFileFactory from './lib/s3/renameFileInS3';
-import closeRequestIsomorphic from '../isomorphic/closeRequest';
+import closeRequestFactory from '../isomorphic/closeRequest';
 
 export function* updateImageJob(closeRequest, getLastNonPublished, updateCurrentFile) {
-    yield closeRequest();
+    yield closeRequest(true);
 
     const result = yield getLastNonPublished();
-    if (!result) return;
+    console.log({result});
 
-    yield updateCurrentFile(`${result.id}.jpg`);
+    if (!result) {
+        console.warn('Queue is empty'); // eslint-disable-line no-console
+        return;
+    }
+
+    yield updateCurrentFile(`${result}.jpg`);
 }
 
 export default () => {
     if (config.apps.api.cron.enabled) {
         const updateCurrentFile = updateCurrentFileFactory(config.apps.api.s3);
-        const job = updateImageJob.bind(null, closeRequestIsomorphic, getLastNonPublishedIsomorphic, updateCurrentFile);
+        const closeRequest = closeRequestFactory(config.blockchain);
+        const getLastNonPublished = getLastNonPublishedFactory(config.blockchain);
+
+        const job = updateImageJob.bind(null, closeRequest, getLastNonPublished, updateCurrentFile);
         scheduleJob('update-image', config.apps.api.cron.schedule, co.wrap(job));
     }
 };

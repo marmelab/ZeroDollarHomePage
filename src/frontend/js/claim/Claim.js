@@ -71,7 +71,7 @@ class Claim extends Component {
 
     render() {
         const { claimError, claiming, error, loading, pullRequest, pullRequestNumber, repository, timeBeforeDisplay, user } = this.props;
-
+        const duration = moment.duration(timeBeforeDisplay, 'seconds');
         return (
             <div className="container claim-page">
                 <HelmetTitle title="Claim your pull request" />
@@ -104,7 +104,25 @@ class Claim extends Component {
                                             {claiming && <Loading />} Submit !
                                         </button>
                                         {claimError && <span className="text-danger" style={styles.feedback}>{claimError.error || claimError.message}</span>}
-                                        {timeBeforeDisplay && <span className="text-success" style={styles.feedback}>Thanks ! You image should be displayed {timeBeforeDisplay.fromNow()} ({timeBeforeDisplay.format('LL')})</span>}
+
+                                        {timeBeforeDisplay === 0 &&
+                                            <span className="text-success" style={styles.feedback}>
+                                                You already claimed this pull request and your image is currently being displayed on ZeroDollarHomePage.
+                                            </span>
+                                        }
+
+                                        {timeBeforeDisplay < 0 &&
+                                            <span className="text-success" style={styles.feedback}>
+                                                You already claimed this pull request and it has been displayed.
+                                            </span>
+                                        }
+
+                                        {timeBeforeDisplay > 0 &&
+                                            <span className="text-success" style={styles.feedback}>
+                                                Thanks ! Your image should be displayed {duration.humanize(true)}&nbsp;
+                                                ({moment().add(duration).format('LL')})
+                                            </span>
+                                        }
                                     </p>
                                 </div>
                             </div>
@@ -126,7 +144,7 @@ Claim.propTypes = {
     pullRequest: PropTypes.object,
     pullRequestNumber: PropTypes.string,
     repository: PropTypes.string,
-    timeBeforeDisplay: PropTypes.object,
+    timeBeforeDisplay: PropTypes.number,
     user: PropTypes.object,
 };
 
