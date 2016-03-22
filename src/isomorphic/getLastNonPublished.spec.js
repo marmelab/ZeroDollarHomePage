@@ -1,52 +1,51 @@
-import co from 'co';
 import { expect } from 'chai';
-import { getLastNonPublished } from './getLastNonPublished';
+import { getLastNonPublished as getLastNonPublishedFactory } from './getLastNonPublished';
 
 describe('getLastNonPublished', () => {
-    it('should return an object describing the last non published object from smartContractProxy response', function*() {
+    it('should call the smartContractProxy.newRequest function with correct parameters', done => {
         const smartContractProxy = {
-            getLastNonPublished: function* () {
-                return [
-                    0,
-                    'pullrequestId',
-                    'authorName',
-                    'createdAt',
-                ];
-            },
+            getLastNonPublished: sendTransaction => new Promise(resolve => {
+                expect(sendTransaction).to.equal(false);
+                resolve({
+                    toNumber: () => 42,
+                });
+            }),
         };
-        const result = yield getLastNonPublished(smartContractProxy);
 
-        expect(result).to.deep.equal({
-            pullrequestId: 'pullrequestId',
-            authorName: 'authorName',
-            createdAt: 'createdAt',
-        });
+        getLastNonPublishedFactory(smartContractProxy).then(() => done()).catch(done);
     });
 
-    it('should return false when smartContractProxy code is 5 (EmptyQueue)', function*() {
+    it('should resolve with the pullRequestId when getLastNonPublished return an array with the pullRequestId as its first element', done => {
         const smartContractProxy = {
-            getLastNonPublished: function* () {
-                return [
-                    5,
-                ];
-            },
+            getLastNonPublished: () => Promise.resolve({
+                toNumber: () => 42,
+            }),
         };
-        const result = yield getLastNonPublished(smartContractProxy);
 
-        expect(result).to.equal(false);
+        getLastNonPublishedFactory(smartContractProxy)
+            .then(pullRequestId => {
+                expect(pullRequestId).to.equal(42);
+                done();
+            })
+            .catch(done);
     });
 
-    it('should throw an error when smartContractProxy code is neither 0 (Ok) or 5 (EmptyQueue)', function*() {
+    it('should reject with the "Invalid result from getLastNonPublished" message when getLastNonPublished does not return an array of results', done => {
         const smartContractProxy = {
-            getLastNonPublished: function* () {
-                return [
-                    1,
-                ];
-            },
+            getLastNonPublished: () => Promise.resolve(),
         };
 
-        expect(co.wrap(function* () {
-            yield getLastNonPublished(smartContractProxy, () => 'Run you fools !');
-        })).to.throw('Run you fools !');
+        getLastNonPublishedFactory(smartContractProxy)
+            .then(() => {
+                done('Should have been rejected');
+            })
+            .catch(err => {
+                try {
+                    expect(err.message).to.equal('Invalid response from getLastNonPublished');
+                } catch (error) {
+                    return done(error);
+                }
+                done();
+            });
     });
 });

@@ -1,19 +1,41 @@
+import co from 'co';
 import initializeProxy from './initializeProxy';
-import getReponseCodeMessageFunc from './getReponseCodeMessage';
 
-export const newRequest = (smartContractProxy, getReponseCodeMessage) => function* newRequestFunc(pullrequestId, authorName, imageUrl) {
-    // result will be an array containing the response code at index 0 and the publication timestamp at index 1
-    // Trying to destructure array with `const [code, timestamp] = result;` throws an error
-    const result = yield smartContractProxy.newRequest(pullrequestId, authorName, imageUrl);
-    if (result[0] !== 0) {
-        throw new Error(getReponseCodeMessage(result[0]));
-    }
+export const newRequest = (smartContractProxy, pullrequestId) =>
+    new Promise(co.wrap(function* newRequestFunc(resolve, reject) {
+        try {
+            const logs = yield smartContractProxy.newRequest(true, pullrequestId);
 
-    return result[1];
-};
+            if (logs.length === 0) {
+                return reject(new Error('Transaction failed (Invalid logs)'));
+            }
 
-export default (config) => function* newRequestDefault(pullrequestId, authorName, imageUrl) {
-    const smartContractProxy = initializeProxy(config);
-    const request = newRequest(smartContractProxy, getReponseCodeMessageFunc);
-    return yield request(pullrequestId, authorName, imageUrl);
-};
+            const log = logs[0];
+
+            if (log.event === 'PullRequestClaimed') {
+                return resolve(log.args.timeBeforeDisplay.toNumber());
+            }
+
+            if (log.event === 'PullRequestAlreadyClaimed') {
+                const number = log.args.timeBeforeDisplay;
+
+                if (log.args.past) {
+                    return resolve(number.negated().toNumber());
+                }
+                return resolve(number.toNumber());
+            }
+
+            if (log.event === 'InvalidPullRequest') {
+                return reject(new Error('Invalid pull request id'));
+            }
+        } catch (err) {
+            console.error(err); // eslint-disable-line no-console
+            reject(err);
+        }
+    }));
+
+export default (config) =>
+    function* newRequestDefault(pullrequestId) {
+        const smartContractProxy = initializeProxy(config);
+        return yield newRequest(smartContractProxy, pullrequestId);
+    };

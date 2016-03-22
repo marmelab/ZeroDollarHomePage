@@ -15,7 +15,7 @@ export const claimPullRequest = (getState, fetchClaim) =>
         }
 
         const { error, timeBeforeDisplay } = yield call(fetchClaim, repository, pullRequestNumber, image, state.user.access_token);
-        console.log({error});
+
         if (error) {
             yield put(claimActions.claim.failure(error));
         } else {

@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import { expect } from 'chai';
 import { updateImageJob } from './cron';
 
@@ -8,14 +9,12 @@ describe('cron', () => {
                 yield updateImageJob(function* () {
                     return true;
                 }, function* () {
-                    return {
-                        id: 'foo',
-                    };
+                    return 'foo';
                 }, function* (imageUrl) {
                     expect(imageUrl).to.equal('foo.jpg');
                     done();
                 });
-            } catch(err) {
+            } catch (err) {
                 done(err);
             }
         });
