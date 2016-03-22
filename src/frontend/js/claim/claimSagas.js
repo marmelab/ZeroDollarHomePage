@@ -1,14 +1,13 @@
-import { call, fork, put, take } from 'redux-saga/effects';
+import { takeLatest } from 'redux-saga';
+import { call, put } from 'redux-saga/effects';
 import claimActions, { claimActionTypes } from './claimActions';
-import { fetchPullRequest, fetchClaim as fetchClaimApi } from './claimApi';
+import { fetchPullRequest as fetchPullRequestApi, fetchClaim as fetchClaimApi } from './claimApi';
 import { loadItemFactory } from '../app/entities/sagas';
 
-export const loadPullRequest = loadItemFactory(claimActionTypes, claimActions);
+export const loadPullRequest = fetchPullRequest => loadItemFactory(claimActionTypes, claimActions, fetchPullRequest);
 
-export const claimPullRequest = function* claimPullRequest(getState, fetchClaim) {
-    while (true) {
-        const { payload: { repository, pullRequestNumber, image } } = yield take(claimActionTypes.claim.REQUEST);
-
+export const claimPullRequest = (getState, fetchClaim) =>
+    function* claimPullRequestSaga({ payload: { repository, pullRequestNumber, image } }) {
         const state = getState();
 
         if (!state || !state.user || !state.user.access_token) {
@@ -22,12 +21,13 @@ export const claimPullRequest = function* claimPullRequest(getState, fetchClaim)
         } else {
             yield put(claimActions.claim.success(timeBeforeDisplay));
         }
-    }
-};
+    };
 
 const sagas = function* sagas(getState) {
-    yield fork(loadPullRequest, fetchPullRequest);
-    yield fork(claimPullRequest, getState, fetchClaimApi);
+    yield [
+        takeLatest(claimActionTypes.item.REQUEST, loadPullRequest(fetchPullRequestApi)),
+        takeLatest(claimActionTypes.claim.REQUEST, claimPullRequest(getState, fetchClaimApi)),
+    ];
 };
 
 export default sagas;
