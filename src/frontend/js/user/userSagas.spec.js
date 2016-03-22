@@ -17,31 +17,20 @@ describe('userSagas', () => {
 
     // We need to use require here instead of import because we're depending on hello.js which require a browser
     const userSagas = require('./userSagas');
-    const signInSaga = userSagas.signIn;
+    const signInWithGithub = sinon.spy();
+    const signInSaga = userSagas.signIn(signInWithGithub);
 
     describe('signIn', () => {
-        it('should starts on SIGN_IN action', () => {
-            const saga = signInSaga();
-
-            expect(saga.next(signInActions.request('/next-route')).value).to.deep.equal(take(userActionTypes.signIn.REQUEST));
-        });
-
         it('should call the fetchSignIn function after a SIGN_IN action', () => {
-            const fetchSignIn = sinon.spy();
-            const saga = signInSaga(fetchSignIn);
+            const saga = signInSaga(signInActions.request());
 
-            saga.next();
-
-            expect(saga.next(signInActions.request('/next-route')).value).to.deep.equal(call(fetchSignIn));
+            expect(saga.next().value).to.deep.equal(call(signInWithGithub));
         });
 
         it('should put the signedIn action after a succesfull signIn', () => {
-            const fetchSignIn = sinon.spy();
-            const storeLocalUser = sinon.spy();
-            const saga = signInSaga(fetchSignIn, storeLocalUser);
+            const saga = signInSaga(signInActions.request());
 
             saga.next();
-            saga.next(signInActions.request('/next-route'));
 
             expect(saga.next({
                 user: { id: 'foo'},
@@ -49,12 +38,10 @@ describe('userSagas', () => {
         });
 
         it('should put the routeActions.push action after a succesfull signIn', () => {
-            const fetchSignIn = sinon.spy();
-            const storeLocalUser = sinon.spy();
-            const saga = signInSaga(fetchSignIn, storeLocalUser);
+            const saga = signInSaga(signInActions.request('/next-route'));
 
             saga.next();
-            saga.next(signInActions.request('/next-route'));
+
             saga.next({
                 user: { id: 'foo'},
             });
@@ -63,13 +50,10 @@ describe('userSagas', () => {
         });
 
         it('should put the signIn action with error after a failed signIn', () => {
-            const fetchSignIn = sinon.spy();
-            const storeLocalUser = sinon.spy();
-            const saga = signInSaga(fetchSignIn, storeLocalUser);
+            const saga = signInSaga(signInActions.request('/next-route'));
             const error = new Error('Run you fools!');
 
             saga.next();
-            saga.next(signInActions.request('/next-route'));
 
             expect(saga.next({
                 error,
