@@ -48,7 +48,7 @@ contract ZeroDollarHomePage {
         }
 
         _queue.push(pullRequestId);
-        PullRequestClaimed(pullRequestId, _queue.length * 1 days);
+        PullRequestClaimed(pullRequestId, (_queue.length - _current) * 1 days);
     }
 
     /*
