@@ -1,6 +1,10 @@
 import querystring from 'querystring';
 
 export default (githubApi, config) => (repo, ref, data) => {
+    if (data.repository.private) {
+        return;
+    }
+
     if (data.action !== 'closed' || !data.pull_request.merged) {
         return;
     }
@@ -9,7 +13,7 @@ export default (githubApi, config) => (repo, ref, data) => {
         repository: data.repository.full_name,
         pr: data.number,
     })}`;
-    const appLink = config.frontendUrl;
+    const appLink = 'http://marmelab.com/ZeroDollarHomepage/';
 
     githubApi.commentOnPullRequest(data.repository.full_name, data.number, `
 Thank you for this pull request @${data.pull_request.user.login} !
