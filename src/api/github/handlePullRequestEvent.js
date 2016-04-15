@@ -16,6 +16,7 @@ export default (githubApi, config) => (repo, ref, data) => {
     const appLink = 'http://marmelab.com/ZeroDollarHomepage/';
 
     githubApi.commentOnPullRequest(data.repository.full_name, data.number, `
-Thank you for this pull request @${data.pull_request.user.login} !
-You can go to this [page](${link}) to submit the content you'd like to be displayed on [ZeroDollarHomePage](${appLink})`);
+Thanks @${data.pull_request.user.login} for contributing to marmelab open-source projects!
+As a sign of our gratitude, you can publish an image to advertise your brand on the marmelab website for a whole day.
+Head to [this page](${link}) to submit your image. It will appear on [Zero Dollar Homepage](${appLink}), powered by blockchain technology.`);
 };
