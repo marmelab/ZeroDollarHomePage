@@ -14,11 +14,6 @@ export class App extends Component {
                 <div className="row">
                     <nav className="navbar navbar-fixed-top navbar-dark bg-primary">
                         <a className="navbar-brand" href="#">{APP_NAME}</a>
-                        <ul className="nav navbar-nav">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/">Home</Link>
-                            </li>
-                        </ul>
                         {user && user.authenticated &&
                             <ul className="nav navbar-nav pull-xs-right">
                                 <li className="nav-item dropdown">

@@ -84,15 +84,19 @@ class Claim extends Component {
                 }
                 {!loading && pullRequest && pullRequest.user.login === user.login &&
                     <div className="row">
-                        <div className="col-xs-12">
-                            <h2>Hi {pullRequest.user.login}!</h2>
-                            <p>You submited this pull request (<a href={pullRequest.html_url} target="_blank">{pullRequest.title}</a>) on {moment(pullRequest.created_at).format('LL')}.</p>
-                            <p>Please send us an image you'd like to see on the <b>ZeroDollarHomePage</b> !</p>
+                        <div className="col-xs-12" style="margin-top:2em">
+                            <h2>Hi {pullRequest.user.login},</h2>
+
+                            <p>And welcome to the marmelab open-source gratification program.</p>
+
+                            <p>The marmelab team accepted your contribution (<a href={pullRequest.html_url} target="_blank">{pullRequest.title}</a>, posted on {moment(pullRequest.created_at).format('LL')}) on one of the marmelab open-source projects. To thank you for your awesomeness, we offer you the ability to advertise your brand on the marmelab website for an entire day.</p>
+
+                            <p>Upload the JPEG image of your choice by dragging it into the square zone below. After upload, adult content detection, and processiong by the Ethereum blockchain, your image will be scheduled for publication on <a href="http://marmelab.com/ZeroDollarHomepage">marmelab.com/ZeroDollarHomePage</a>.</p>
                             <hr />
                             <div className="row">
                                 <div className="col-xs-12">
                                     <Dropzone onDrop={this.onDrop.bind(this)} style={styles.dropzone} multiple={false} accept="image/jpeg">
-                                        {!this.state.image && <div>Drop an image here, or click to select the file to upload.</div>}
+                                        {!this.state.image && <div>Drop a JPEG image here, or click to select the file to upload.</div>}
                                         {this.state.image && <img className="img-thubnail" style={styles.image} src={this.state.image.preview} />}
                                     </Dropzone>
                                 </div>
@@ -100,11 +104,21 @@ class Claim extends Component {
                             <div className="row">
                                 <div className="col-xs-12">
                                     <p style={styles.buttonBar}>
-                                        <button onClick={this.onSubmit.bind(this)} className="btn btn-primary btn-lg" disabled={!this.state.image || claiming}>
-                                            {claiming && <Loading />} Submit !
-                                        </button>
-                                        {claimError && <span className="text-danger" style={styles.feedback}>{claimError.error || claimError.message}</span>}
-
+                                        {!claiming && !timeBeforeDisplay &&
+                                            <button onClick={this.onSubmit.bind(this)} className="btn btn-primary btn-lg" disabled={!this.state.image || claiming}>
+                                                Submit
+                                            </button>
+                                        }
+                                        {claiming &&
+                                            <span class="text-info" style={styles.feedback}>
+                                                <Loading /> Please wait up to 1 minute for blockchain processing
+                                            </span>
+                                        }
+                                        {claimError &&
+                                            <span className="text-danger" style={styles.feedback}>
+                                                {claimError.error || claimError.message}
+                                            </span>
+                                        }
                                         {timeBeforeDisplay === 0 &&
                                             <span className="text-success" style={styles.feedback}>
                                                 You already claimed this pull request and your image is currently being displayed on ZeroDollarHomePage.
