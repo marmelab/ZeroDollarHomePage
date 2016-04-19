@@ -179,10 +179,10 @@ create-client:
 	./node_modules/babel-cli/bin/babel-node.js ./bin/createAdmin.js ${CLIENT_NAME} ${CLIENT_EMAIL} ${CLIENT_PASSWORD}
 
 init-start-image:
-	./node_modules/babel-cli/bin/babel-node.js ./bin/renameStartImageInS3.js 'start.jpg';
+	./node_modules/babel-cli/bin/babel-node.js ./bin/renameStartImageInS3.js 'start.jpg'
 
 update-current-image:
-	./node_modules/babel-cli/bin/babel-node.js ./bin/updateCurrentImageFromBlockchain.js;
+	./node_modules/babel-cli/bin/babel-node.js ./bin/updateCurrentImageFromBlockchain.js
 
 # Ethereum =====================================================================
 eris-start-keys-services:
