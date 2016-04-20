@@ -84,7 +84,7 @@ class Claim extends Component {
                 }
                 {!loading && pullRequest && pullRequest.user.login === user.login &&
                     <div className="row">
-                        <div className="col-xs-12" style="margin-top:2em">
+                        <div className="col-xs-12" style={{'marginTop': '2em'}}>
                             <h2>Hi {pullRequest.user.login},</h2>
 
                             <p>And welcome to the marmelab open-source gratification program.</p>
@@ -110,7 +110,7 @@ class Claim extends Component {
                                             </button>
                                         }
                                         {claiming &&
-                                            <span class="text-info" style={styles.feedback}>
+                                            <span className="text-info" style={styles.feedback}>
                                                 <Loading /> Please wait up to 1 minute for blockchain processing
                                             </span>
                                         }

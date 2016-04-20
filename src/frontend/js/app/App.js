@@ -16,8 +16,8 @@ export class App extends Component {
                         <a className="navbar-brand" href="#">{APP_NAME}</a>
                         {user && user.authenticated &&
                             <ul className="nav navbar-nav pull-xs-right">
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                <li className="nav-item">
+                                    <a className="nav-link" href="#" role="button">
                                         {user.email}
                                     </a>
                                 </li>
