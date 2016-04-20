@@ -14,9 +14,18 @@ describe('github', () => {
 
         const handlePullRequestEvent = handlePullRequestEventFactory(githubApi, config);
 
+        it('shouldn\'t handle event with a private repository', () => {
+            handlePullRequestEvent(undefined, undefined, {
+                repository: { private: true },
+            });
+
+            expect(githubApi.commentOnPullRequest.called).to.be.false;
+        });
+
         it('shouldn\'t handle event with action different than \'close\'', () => {
             handlePullRequestEvent(undefined, undefined, {
                 action: 'open',
+                repository: { private: false },
             });
 
             expect(githubApi.commentOnPullRequest.called).to.be.false;
@@ -25,6 +34,7 @@ describe('github', () => {
         it('shouldn\'t handle pull request which haven`t been merged', () => {
             handlePullRequestEvent(undefined, undefined, {
                 action: 'close',
+                repository: { private: false },
                 pull_request: {
                     merged: false,
                 },
@@ -36,7 +46,10 @@ describe('github', () => {
         it('should handle closed pull requests and comment on it', () => {
             handlePullRequestEvent(undefined, undefined, {
                 action: 'closed',
-                repository: { full_name: 'theshire/bagend' },
+                repository: {
+                    full_name: 'theshire/bagend',
+                    private: false,
+                },
                 number: 42,
                 pull_request: {
                     merged: true,
