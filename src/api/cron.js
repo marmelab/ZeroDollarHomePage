@@ -27,5 +27,6 @@ export default () => {
 
         const job = updateImageJob.bind(null, closeRequest, getLastNonPublished, updateCurrentFile);
         scheduleJob('update-image', config.apps.api.cron.schedule, co.wrap(job));
+        console.log('Cron enabled', config.apps.api.cron.schedule);
     }
 };
