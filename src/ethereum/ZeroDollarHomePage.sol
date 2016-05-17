@@ -37,6 +37,7 @@ contract ZeroDollarHomePage {
         while (!found && index < _queue.length) {
             if (_queue[index] == pullRequestId) {
                 found = true;
+                break;
             } else {
                 index++;
             }
@@ -55,7 +56,7 @@ contract ZeroDollarHomePage {
      * Close the current request in queue and move the queue to its next element.
      */
     function closeRequest() {
-        if (_handledFirst && _current < _queue.length) {
+        if (_handledFirst && _current < _queue.length - 1) {
             _current += 1;
         }
 

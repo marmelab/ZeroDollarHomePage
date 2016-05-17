@@ -60,7 +60,7 @@ deploy-api:
 deploy-frontend:
 	fab --config=.fabricrc deploy_static
 
-deploy: deploy-prod-api deploy-prod-frontend
+deploy: deploy-api deploy-frontend
 
 # Development ==================================================================
 run-dev:
