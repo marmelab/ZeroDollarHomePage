@@ -65,23 +65,17 @@ app.context.onerror = function onError(err) {
         err.headerSent = true;
         return;
     }
+    const body = {
+        error: err.message,
+        code: err.code,
+    };
 
     if (env === 'development') {
-        // respond with the error details
-        this.body = JSON.stringify({
-            error: err.message,
-            stack: err.stack,
-            code: err.code,
-        });
-        this.type = 'json';
-    } else {
-        // no stack
-        this.body = JSON.stringify({
-            error: err.message,
-            code: err.code,
-        });
+        body.stack = err.stack;
     }
 
+    this.body = JSON.stringify(body);
+    this.type = 'json';
     this.res.end(this.body);
 };
 
