@@ -75,8 +75,11 @@ app.context.onerror = function onError(err) {
         });
         this.type = 'json';
     } else {
-        // just send the error message
-        this.body = err.message;
+        // no stack
+        this.body = JSON.stringify({
+            error: err.message,
+            code: err.code,
+        });
     }
 
     this.res.end(this.body);
