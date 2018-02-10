@@ -1,4 +1,4 @@
-/* eslint func-names:0 */
+/* eslint-disable func-names */
 
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -14,7 +14,7 @@ describe('Vision API', () => {
         });
 
         it('should return false if unable to request Vision API', function* () {
-            sinon.stub(visionApi, 'annotate', () => Promise.reject(new Error()));
+            sinon.stub(visionApi, 'annotate', () => Promise.reject(new Error('Test error for Vision API unreachable')));
             const isSafeImage = isSafeImageFactory();
             const result = yield isSafeImage('test');
             expect(result).to.equal(false);
@@ -41,7 +41,7 @@ describe('Vision API', () => {
             sinon.stub(visionApi, 'annotate', () => Promise.resolve({
                 responses: [{
                     safeSearchAnnotation: {
-                        adult: 'LIKELEY',
+                        adult: 'LIKELY',
                         spoof: 'UNLIKELY',
                         medical: 'POSSIBLE',
                         violence: 'VERY_UNLIKELY',
@@ -58,7 +58,7 @@ describe('Vision API', () => {
                 responses: [{
                     safeSearchAnnotation: {
                         adult: 'UNLIKELY',
-                        spoof: 'LIKELEY',
+                        spoof: 'LIKELY',
                         medical: 'POSSIBLE',
                         violence: 'VERY_UNLIKELY',
                     },
@@ -75,7 +75,7 @@ describe('Vision API', () => {
                     safeSearchAnnotation: {
                         adult: 'POSSIBLE',
                         spoof: 'VERY_UNLIKELY',
-                        medical: 'LIKELEY',
+                        medical: 'LIKELY',
                         violence: 'UNLIKELY',
                     },
                 }],
@@ -92,7 +92,7 @@ describe('Vision API', () => {
                         adult: 'UNLIKELY',
                         spoof: 'VERY_UNLIKELY',
                         medical: 'POSSIBLE',
-                        violence: 'LIKELEY',
+                        violence: 'LIKELY',
                     },
                 }],
             }));

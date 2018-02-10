@@ -10,8 +10,11 @@ CLIENT_PASSWORD ?= supadupa42!
 
 BLOCKCHAIN_ROOT_ADDR ?= $(shell cat ./.eris/addr.txt)
 
+ETHEREUM_DEFAULT_ACCOUNT ?= $(shell cat ./.ethereum/account)
+ETHEREUM_DATA_DIRECTORY ?= ${HOME}/ethereum-data
+ETHEREUM_NETWORK_NAME ?= TestnetMainNode
 
-# Initialization ===============================================================
+# Initialization ===============================================================
 copy-conf:
 	@cp -n ./config/development-dist.js ./config/development.js | true
 
@@ -20,8 +23,9 @@ install: copy-conf
 	@npm install
 	@echo "Installing Selenium server"
 	@./node_modules/.bin/selenium-standalone install --version=2.50.1 --drivers.chrome.version=2.21
+	mkdir -p ./.ethereum
 
-# Deployment ===================================================================
+# Deployment ===================================================================
 clear-build:
 	@rm -rf ./build/*
 
@@ -56,9 +60,9 @@ deploy-api:
 deploy-frontend:
 	fab --config=.fabricrc deploy_static
 
-deploy: deploy-prod-api deploy-prod-frontend
+deploy: deploy-api deploy-frontend
 
-# Development ==================================================================
+# Development ==================================================================
 run-dev:
 	@node_modules/.bin/pm2 start ./config/pm2_servers/dev.json
 stop-dev:
@@ -97,7 +101,7 @@ log-frontend-dev:
 log-api-dev:
 	@node_modules/.bin/pm2 logs zdh_api-dev
 
-# Tests ========================================================================
+# Tests ========================================================================
 build-test: clear-build
 	@NODE_ENV=test ./node_modules/.bin/webpack --progress
 
@@ -151,7 +155,7 @@ reset-test-database:
 		-e api \
 		up
 
-# Migrations ===================================================================
+# Migrations ===================================================================
 migrate:
 	@./node_modules/.bin/db-migrate \
 		--migrations-dir=./src/api/lib/migrations \
@@ -166,7 +170,7 @@ create-migration:
 		-e api \
 		create migration
 
-# Binaries =====================================================================
+# Binaries =====================================================================
 create-admin:
 	./node_modules/babel-cli/bin/babel-node.js ./bin/createAdmin.js ${ADMIN_NAME} ${ADMIN_EMAIL} ${ADMIN_PASSWORD}
 
@@ -175,7 +179,10 @@ create-client:
 	./node_modules/babel-cli/bin/babel-node.js ./bin/createAdmin.js ${CLIENT_NAME} ${CLIENT_EMAIL} ${CLIENT_PASSWORD}
 
 init-start-image:
-	./node_modules/babel-cli/bin/babel-node.js ./bin/renameStartImageInS3.js 'start.jpg';
+	./node_modules/babel-cli/bin/babel-node.js ./bin/renameStartImageInS3.js 'start.jpg'
+
+update-current-image:
+	./node_modules/babel-cli/bin/babel-node.js ./bin/updateCurrentImageFromBlockchain.js
 
 # Ethereum =====================================================================
 eris-start-keys-services:
@@ -217,5 +224,23 @@ delete-blockchain: stop-blockchain
 deploy-contracts: eris-start-keys-services
 	cd src/ethereum && eris pkgs do --chain zerodollar --address ${BLOCKCHAIN_ROOT_ADDR}
 
-deploy-contracts-ethereum:
+init-ethereum:
+	@sed -e s/__ACCOUNT_ADDRESS__/${ETHEREUM_DEFAULT_ACCOUNT}/g ./CustomGenesis.json-dist > ./CustomGenesis.json
+
+start-ethereum:
+	geth \
+		--genesis ./CustomGenesis.json \
+		--nodiscover \
+		--maxpeers 0 \
+		--rpc \
+		--datadir ${ETHEREUM_DATA_DIRECTORY} \
+		--identity ${ETHEREUM_NETWORK_NAME} \
+		--etherbase ${ETHEREUM_DEFAULT_ACCOUNT} \
+		--unlock ${ETHEREUM_DEFAULT_ACCOUNT} \
+		console
+
+run-ethereum-miner:
+	ethminer -C --no-precompute -t 1
+
+deploy-contracts-ethereum: build-ethereum
 	@./node_modules/.bin/babel-node ./bin/deployEthereumContracts.js

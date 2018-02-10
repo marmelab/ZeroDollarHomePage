@@ -43,7 +43,8 @@ def deploy_api(branch='master'):
         # DB migrations
         run('NODE_ENV=%s make migrate' % env.environment)
         # Update supervisor configuration
-        put(env.supervisord_source, '/etc/supervisor/conf.d/%s' % env.supervisord_dest, use_sudo=True)
+        # TODO: Do this step manually
+        # put(env.supervisord_source, '/etc/supervisor/conf.d/%s' % env.supervisord_dest, use_sudo=True)
 
     sudo('service supervisor restart')
     sudo('supervisorctl start %s' % env.api_name)

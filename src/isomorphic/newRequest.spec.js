@@ -1,32 +1,81 @@
-import co from 'co';
+/* eslint-disable func-names */
 import { expect } from 'chai';
-import { newRequest } from './newRequest';
+import { newRequest as newRequestFactory } from './newRequest';
 
 describe('newRequest', () => {
-    it('should return an object describing the last non published object from smartContractProxy response', function*() {
+    it('should call the smartContractProxy.newRequest function with correct parameters', done => {
         const smartContractProxy = {
-            newRequest: function* () {
-                return [
-                    0,
-                ];
-            },
+            newRequest: (sendTransaction, pullRequestId) => new Promise(resolve => {
+                expect(sendTransaction).to.equal(true);
+                expect(pullRequestId).to.equal('foo');
+                resolve([{
+                    event: 'PullRequestClaimed',
+                    args: {
+                        timeBeforeDisplay: {
+                            toNumber: () => 42,
+                        },
+                    },
+                }]);
+            }),
         };
-        const result = yield newRequest(smartContractProxy)();
 
-        expect(result).to.be.true;
+        newRequestFactory(smartContractProxy, 'foo').then(() => done()).catch(done);
     });
 
-    it('should throw an error when smartContractProxy code is not 0 (Ok)', function*() {
+    it('should resolve with the timeBeforeDisplay when closeRequest contains the PullRequestClaimed event', done => {
         const smartContractProxy = {
-            newRequest: function* () {
-                return [
-                    1,
-                ];
-            },
+            newRequest: () => Promise.resolve([{
+                event: 'PullRequestClaimed',
+                args: {
+                    timeBeforeDisplay: {
+                        toNumber: () => 42,
+                    },
+                },
+            }]),
         };
 
-        expect(co.wrap(function* () {
-            yield newRequest(smartContractProxy, () => 'Run you fools !')();
-        })).to.throw('Run you fools !');
+        newRequestFactory(smartContractProxy, 'foo')
+            .then(timeBeforeDisplay => {
+                expect(timeBeforeDisplay).to.equal(42);
+                done();
+            })
+            .catch(done);
+    });
+
+    it('should resolve with the timeBeforeDisplay when closeRequest contains the PullRequestAlreadyClaimed event', done => {
+        const smartContractProxy = {
+            newRequest: () => Promise.resolve([{
+                event: 'PullRequestAlreadyClaimed',
+                args: {
+                    timeBeforeDisplay: {
+                        toNumber: () => 42,
+                    },
+                },
+            }]),
+        };
+
+        newRequestFactory(smartContractProxy, 'foo')
+            .then(timeBeforeDisplay => {
+                expect(timeBeforeDisplay).to.equal(42);
+                done();
+            })
+            .catch(done);
+    });
+
+    it('should reject with the "Invalid pull request id" message when closeRequest contains the InvalidPullRequest event', done => {
+        const smartContractProxy = {
+            newRequest: () => Promise.resolve([{
+                event: 'InvalidPullRequest',
+            }]),
+        };
+
+        newRequestFactory(smartContractProxy, 'foo')
+            .then(() => {
+                done('Should have been rejected');
+            })
+            .catch(err => {
+                expect(err.message).to.equal('Invalid pull request id');
+                done();
+            });
     });
 });
