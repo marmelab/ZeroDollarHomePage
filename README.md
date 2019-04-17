@@ -1,3 +1,13 @@
+<table>
+        <tr>
+            <td><img width="60" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/book.svg" alt="publication" /></td>
+            <td><strong>Archived Repository</strong><br />
+            The code of this repository was written to illustrate the blog post <a href="https://marmelab.com/blog/2016/05/20/blockchain-for-web-developers-in-practice.html">The Blockchain Explained to Web Developers, Part 2: In Practice</a><br />
+        <strong>This code is not intended to be used in production, and is not maintained.</strong>
+        </td>
+        </tr>
+</table>
+
 # ZeroDollarHomePage
 
 ## Install
